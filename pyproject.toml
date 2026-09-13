@@ -1,0 +1,135 @@
+[build-system]
+requires = ["hatchling>=1.27"]
+build-backend = "hatchling.build"
+
+[project]
+name = "catagg"
+dynamic = ["version"]
+description = "Catastrophe loss aggregation, from event loss tables to net exceedance probability curves."
+readme = "README.md"
+requires-python = ">=3.11"
+license = "MIT"
+license-files = ["LICENSE"]
+authors = [{ name = "Amal John" }]
+keywords = [
+  "catastrophe-modelling",
+  "reinsurance",
+  "exceedance-probability",
+  "actuarial",
+  "monte-carlo",
+]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Intended Audience :: Science/Research",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Typing :: Typed",
+  "Topic :: Scientific/Engineering :: Mathematics",
+]
+dependencies = [
+  "numpy>=1.26",
+  "pandas>=2.1",
+  "pyarrow>=15.0",
+  "scipy>=1.11",
+]
+
+[project.optional-dependencies]
+dev = [
+  "mypy>=1.11",
+  "pytest>=8.0",
+  "ruff>=0.6",
+]
+docs = [
+  "mkdocs>=1.6,<2",
+  "mkdocs-material>=9.5",
+  "mkdocstrings[python]>=0.26",
+]
+
+[project.urls]
+Homepage = "https://github.com/John-Amal/catagg"
+Documentation = "https://john-amal.github.io/catagg/"
+Source = "https://github.com/John-Amal/catagg"
+Changelog = "https://github.com/John-Amal/catagg/blob/main/CHANGELOG.md"
+Issues = "https://github.com/John-Amal/catagg/issues"
+
+[tool.hatch.version]
+path = "src/catagg/__init__.py"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/catagg"]
+
+[tool.hatch.build.targets.sdist]
+include = ["src", "tests", "docs", "CHANGELOG.md", "LICENSE", "README.md"]
+
+# ---------------------------------------------------------------------------
+# Lint / format
+# ---------------------------------------------------------------------------
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+src = ["src", "tests"]
+# Ruff reformats Python blocks inside Markdown. The README is the project
+# specification and is author-owned prose; a formatter should not rewrite it.
+extend-exclude = ["*.md"]
+
+[tool.ruff.lint]
+select = [
+  "A",    # builtin shadowing
+  "B",    # bugbear
+  "C4",   # comprehensions
+  "D",    # docstrings
+  "E",    # pycodestyle errors
+  "F",    # pyflakes
+  "I",    # import order
+  "N",    # naming
+  "NPY",  # numpy-specific
+  "PD",   # pandas-vet
+  "PT",   # pytest style
+  "RUF",
+  "SIM",
+  "UP",   # pyupgrade
+  "W",
+]
+ignore = [
+  "D105",  # docstring in magic method
+  "D107",  # docstring in __init__
+]
+
+[tool.ruff.lint.pydocstyle]
+convention = "numpy"
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["D100", "D101", "D102", "D103", "D104"]
+# `catagg.io` is the industry-legible name for the ingest layer and is only ever
+# reached as an absolute import, so shadowing the stdlib module name is safe.
+"src/catagg/io/*" = ["A005"]
+"docs/*" = ["D"]
+
+[tool.ruff.format]
+docstring-code-format = true
+
+# ---------------------------------------------------------------------------
+# Types
+# ---------------------------------------------------------------------------
+[tool.mypy]
+python_version = "3.11"
+files = ["src", "tests"]
+strict = true
+warn_unreachable = true
+pretty = true
+
+# scipy and pyarrow ship incomplete type information; numpy and pandas are
+# checked normally. Narrow these as the stubs improve rather than widening them.
+[[tool.mypy.overrides]]
+module = ["scipy.*", "pyarrow.*"]
+ignore_missing_imports = true
+
+# ---------------------------------------------------------------------------
+# Tests
+# ---------------------------------------------------------------------------
+[tool.pytest.ini_options]
+minversion = "8.0"
+testpaths = ["tests"]
+addopts = "-ra --strict-markers --strict-config"
+xfail_strict = true

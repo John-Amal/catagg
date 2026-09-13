@@ -1,0 +1,27 @@
+name: Feature request
+description: Propose a capability the library does not have
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: The problem
+      description: What decision or workflow is currently blocked?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed behaviour
+      description: Sketch the API you would want, and what it should return.
+    validations:
+      required: true
+  - type: textarea
+    id: scope
+    attributes:
+      label: Why this belongs in scope
+      description: >
+        The README states what this project deliberately does not cover.
+        Explain how the proposal fits inside that boundary.
+    validations:
+      required: true
