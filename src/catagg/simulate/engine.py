@@ -13,6 +13,13 @@ since ``E[N_i] = E[N] * p_i = rate_i``, while making the group total
 over-dispersed, because the shared draw of ``N`` induces a positive covariance
 ``rate_i * rate_j / k`` between any two events in the group. That covariance is
 the clustering; per-event negative binomial draws would not produce it.
+
+A third stage then attaches a loss to each occurrence. With
+``secondary_uncertainty=False`` that loss is the event's ``mean_loss``, which
+leaves the AAL exact and understates every other moment. With ``True`` it is a
+draw from `catagg.severity.BetaSeverity`, which leaves the AAL exact as well —
+the severity mean is unchanged — and adds ``sum(rate * std_loss ** 2)`` to the
+variance of the annual aggregate loss.
 """
 
 from __future__ import annotations
@@ -28,6 +35,7 @@ from catagg.exceptions import CataggError
 from catagg.frequency.models import FrequencyModel, resolve_frequency
 from catagg.io.elt import validate_elt
 from catagg.io.yelt import YELT_DTYPES, n_years_of
+from catagg.severity.beta import BetaSeverity
 
 __all__ = ["simulate", "to_ylt"]
 
@@ -151,9 +159,11 @@ def simulate(
         Negative binomial shape parameter ``k``. Required for
         ``frequency="negative_binomial"``.
     secondary_uncertainty
-        Not yet implemented. With ``False``, loss given occurrence is degenerate
-        at ``mean_loss``, which leaves the AAL exact and every tail metric
-        understated.
+        Draw loss given occurrence from the fitted
+        `catagg.severity.BetaSeverity` rather than fixing it at ``mean_loss``.
+        The AAL is the same either way; the tail is not. With ``False`` every
+        occurrence of an event carries the same loss, which understates every
+        moment above the first.
     group_by
         ELT column defining the frequency groups. The frequency model is applied
         to each group's annual total. ``None`` treats the whole ELT as one group.
@@ -172,8 +182,6 @@ def simulate(
 
     Raises
     ------
-    NotImplementedError
-        If ``secondary_uncertainty`` is ``True``.
     CataggError
         If ``group_by`` is not an ELT column.
     ValueError
@@ -188,12 +196,6 @@ def simulate(
     >>> list(yelt.columns)
     ['sim_year', 'event_id', 'occurrence_index', 'gross_loss']
     """
-    if secondary_uncertainty:
-        raise NotImplementedError(
-            "secondary_uncertainty is not implemented in this version. Loss given "
-            "occurrence is currently degenerate at mean_loss; the beta-with-point-mass "
-            "sampler lands in catagg.severity."
-        )
     if n_years <= 0:
         raise ValueError(f"n_years must be strictly positive, got {n_years}.")
     if chunk_years <= 0:
@@ -207,12 +209,15 @@ def simulate(
     event_id = elt["event_id"].to_numpy(dtype=np.int64)
     mean_loss = elt["mean_loss"].to_numpy(dtype=np.float64)
 
-    seeds = np.random.SeedSequence(seed).spawn(len(groups))
+    # One child per group, plus one reserved for severity. Spawning is ordered,
+    # so the group streams are the ones they would have been without the extra
+    # child: adding severity does not move a run with it switched off.
+    seeds = np.random.SeedSequence(seed).spawn(len(groups) + 1)
     total_counts = np.zeros(n_years, dtype=np.int64)
     year_pieces: list[NDArray[np.int32]] = []
     position_pieces: list[NDArray[np.int64]] = []
 
-    for (_, positions), child in zip(groups, seeds, strict=True):
+    for (_, positions), child in zip(groups, seeds[:-1], strict=True):
         rng = np.random.default_rng(child)
         group_rates = rate[positions]
         counts = model.sample_annual_counts(float(group_rates.sum()), n_years, rng)
@@ -236,12 +241,19 @@ def simulate(
         np.arange(n_occurrences, dtype=np.int64) - np.repeat(starts, total_counts)
     ).astype(np.int32, copy=False)
 
+    if secondary_uncertainty:
+        gross_loss = BetaSeverity.from_elt(elt).sample(
+            occurrence_positions, np.random.default_rng(seeds[-1])
+        )
+    else:
+        gross_loss = mean_loss[occurrence_positions]
+
     yelt = pd.DataFrame(
         {
             "sim_year": np.repeat(np.arange(n_years, dtype=np.int32), total_counts),
             "event_id": event_id[occurrence_positions],
             "occurrence_index": occurrence_index,
-            "gross_loss": mean_loss[occurrence_positions],
+            "gross_loss": gross_loss,
         }
     ).astype(YELT_DTYPES)
     yelt.attrs["n_years"] = int(n_years)

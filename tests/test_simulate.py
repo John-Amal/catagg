@@ -135,9 +135,20 @@ def test_unknown_group_column_is_rejected(tiny_elt: pd.DataFrame) -> None:
         simulate(tiny_elt, n_years=10, group_by="zone")
 
 
-def test_secondary_uncertainty_is_explicitly_unimplemented(tiny_elt: pd.DataFrame) -> None:
-    with pytest.raises(NotImplementedError, match="secondary_uncertainty"):
-        simulate(tiny_elt, n_years=10, secondary_uncertainty=True)
+def test_secondary_uncertainty_changes_nothing_when_every_variance_is_zero(
+    tiny_elt: pd.DataFrame,
+) -> None:
+    """With no severity uncertainty to add, the flag must be a no-op, exactly.
+
+    A sharper statement than a moment check: the two YELTs have to agree cell
+    for cell, which they only can if the severity stage draws from a reserved
+    seed and the degenerate regime returns the mean rather than sampling it.
+    """
+    certain = tiny_elt.assign(std_loss=0.0)
+    pd.testing.assert_frame_equal(
+        simulate(certain, n_years=2_000, seed=6),
+        simulate(certain, n_years=2_000, seed=6, secondary_uncertainty=True),
+    )
 
 
 @pytest.mark.parametrize("n_years", [0, -1])

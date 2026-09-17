@@ -110,3 +110,62 @@ def test_standard_error_falls_as_the_square_root_of_the_year_count(
 def test_aal_standard_error_rejects_a_non_positive_year_count(example_elt: pd.DataFrame) -> None:
     with pytest.raises(ValueError, match="n_years"):
         aal_standard_error(example_elt, 0)
+
+
+@pytest.mark.parametrize(("frequency", "dispersion"), CASES)
+def test_secondary_uncertainty_leaves_the_aal_unchanged(
+    example_elt: pd.DataFrame, frequency: str, dispersion: float | None
+) -> None:
+    """Stochastic severity has the same mean, so the AAL must not move.
+
+    The tolerance widens with the flag because the severity term enters the
+    variance of the estimator, which is exactly why `aal_standard_error` takes
+    the flag rather than leaving the caller to pick a looser number.
+    """
+    n_years = 50_000
+    expected = analytic_aal(example_elt)
+    standard_error = aal_standard_error(
+        example_elt, n_years, frequency, dispersion, secondary_uncertainty=True
+    )
+    assert 4.0 * standard_error < 0.10 * expected
+
+    yelt = simulate(
+        example_elt,
+        n_years=n_years,
+        frequency=frequency,
+        dispersion=dispersion,
+        secondary_uncertainty=True,
+        seed=2024,
+    )
+    simulated = float(to_ylt(yelt)["aggregate_loss"].mean())
+    assert abs(simulated - expected) < 4.0 * standard_error
+
+
+@pytest.mark.parametrize(("frequency", "dispersion"), CASES)
+def test_secondary_uncertainty_adds_the_severity_variance_term(
+    example_elt: pd.DataFrame, frequency: str, dispersion: float | None
+) -> None:
+    """The end-to-end check that the sampler's variance reaches the aggregate.
+
+    `analytic_annual_loss_variance` adds ``sum(rate * std_loss ** 2)`` under the
+    flag. Nothing in the engine knows about that formula, so agreement between
+    the two is a real check on both.
+    """
+    n_years = 100_000
+    expected = analytic_annual_loss_variance(
+        example_elt, frequency, dispersion, secondary_uncertainty=True
+    )
+    without = analytic_annual_loss_variance(example_elt, frequency, dispersion)
+    # The term has to be big enough here for the test to be about it at all.
+    assert expected > 1.2 * without
+
+    yelt = simulate(
+        example_elt,
+        n_years=n_years,
+        frequency=frequency,
+        dispersion=dispersion,
+        secondary_uncertainty=True,
+        seed=88,
+    )
+    observed = float(to_ylt(yelt)["aggregate_loss"].var(ddof=1))
+    assert observed == pytest.approx(expected, rel=0.10)

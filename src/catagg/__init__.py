@@ -16,6 +16,7 @@ from catagg.io import (
     write_yelt,
 )
 from catagg.metrics import aal_standard_error, analytic_aal, analytic_annual_loss_variance
+from catagg.severity import BetaSeverity, SeverityRegime
 from catagg.simulate import simulate, to_ylt
 
 __version__ = "0.1.0.dev0"
@@ -25,11 +26,13 @@ __all__ = [
     "ELT_DTYPES",
     "YELT_COLUMNS",
     "YELT_DTYPES",
+    "BetaSeverity",
     "CataggError",
     "ELTValidationError",
     "FrequencyModel",
     "NegativeBinomial",
     "Poisson",
+    "SeverityRegime",
     "__version__",
     "aal_standard_error",
     "analytic_aal",
