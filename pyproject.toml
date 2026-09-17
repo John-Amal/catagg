@@ -37,6 +37,7 @@ dependencies = [
 [project.optional-dependencies]
 dev = [
   "mypy>=1.11",
+  "pandas-stubs>=2.2",
   "pytest>=8.0",
   "ruff>=0.6",
 ]
@@ -113,7 +114,15 @@ docstring-code-format = true
 # Types
 # ---------------------------------------------------------------------------
 [tool.mypy]
-python_version = "3.11"
+# 3.12, not the 3.11 floor in requires-python. mypy applies python_version as
+# the parse grammar for everything it reads, including dependency stubs, and
+# numpy >= 2.5 ships stubs using PEP 695 `type` statements. At a 3.11 target
+# mypy aborts on numpy/__init__.pyi before checking a single project file, and
+# the error cannot be suppressed. This is a static-analysis setting only: it
+# does not change requires-python, what gets installed, or 3.11 runtime
+# support, which the test matrix demonstrates. Lower it when the upstream mypy
+# fix ships.
+python_version = "3.12"
 files = ["src", "tests"]
 strict = true
 warn_unreachable = true

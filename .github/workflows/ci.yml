@@ -22,7 +22,10 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
-          python-version: "3.11"
+          # 3.12 so this job resolves the same numpy and stubs a developer gets
+          # locally. On 3.11 pip backs numpy off to 2.4, whose stubs parse under
+          # a different grammar, and the job would disagree with local mypy.
+          python-version: "3.12"
           cache: pip
       - name: Install
         run: python -m pip install --upgrade pip && python -m pip install -e ".[dev]"

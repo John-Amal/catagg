@@ -20,5 +20,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Release workflow publishing to PyPI via Trusted Publishing, with a
   tag-versus-package-version guard, and the release procedure documented in
   `docs/releasing.md`.
+- ELT schema with `validate_elt`, which reports every failed check at once and
+  enforces the feasibility bound `std_loss**2 <= mean_loss * (exposure_value -
+  mean_loss)`; `read_elt` for Parquet and CSV.
+- Frequency models `Poisson` and `NegativeBinomial`, applied to a group's annual
+  event count rather than per event, so that specified over-dispersion survives
+  into the aggregate.
+- `simulate`, generating a year event loss table by rate-proportional allocation
+  of each group's annual occurrences; `to_ylt`, collapsing it to one row per
+  simulated year including years with no events.
+- `write_yelt` and `read_yelt`, round-tripping the simulated year count through
+  Parquet file metadata.
+- Closed-form references `analytic_aal`, `analytic_annual_loss_variance` and
+  `aal_standard_error`, used as the tolerances in the convergence tests.
+- `swiss_multiperil_elt`, a documented synthetic generator so the repository
+  runs from a clean clone with no data dependencies.
+- Simulation documentation page.
 
 [Unreleased]: https://github.com/John-Amal/catagg/commits/main

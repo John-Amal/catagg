@@ -18,6 +18,7 @@ Python 3.11+. Runtime dependencies are numpy, pandas, pyarrow and scipy.
 
 ## Where to start
 
+- **[Simulation](simulation.md)** — the ELT schema, frequency models and the year loop.
 - **[Validation](validation.md)** — the checks that show the numbers can be trusted.
 - **[API reference](api.md)** — the public surface.
 - **[Changelog](changelog.md)** — what changed, and when.
