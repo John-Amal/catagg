@@ -501,7 +501,7 @@ end of the v0.1.0 milestone; no results are published here yet.</p>
 <tr>
 <td>Sampled severity moments against the ELT input</td>
 <td>Method-of-moments beta fitting recovers its own inputs</td>
-<td>Not built</td>
+<td>In CI</td>
 </tr>
 <tr>
 <td>Ceded loss against the aggregate reinstatement cap</td>
@@ -525,6 +525,11 @@ end of the v0.1.0 milestone; no results are published here yet.</p>
 in closed form from the ELT and the frequency model. A fixed percentage
 tolerance would pass a biased engine on a fat-tailed portfolio and fail a
 correct one on a thin portfolio.</p>
+<p>The severity check applies the same rule at the second moment: the sample
+variance of <code>n</code> draws is compared against <code>sqrt((mu_4 - sigma**4) / n)</code>, with
+the fourth central moment taken from the fit's own closed-form moments. Each
+assertion also carries a guard on its own detection power, so a run too short
+to prove anything fails rather than passing quietly.</p>
 
 
 

@@ -599,6 +599,21 @@ and this project adheres to <a href="https://semver.org/spec/v2.0.0.html">Semant
   <code>aal_standard_error</code>, used as the tolerances in the convergence tests.</li>
 <li><code>swiss_multiperil_elt</code>, a documented synthetic generator so the repository
   runs from a clean clone with no data dependencies.</li>
+<li><code>BetaSeverity</code> and <code>SeverityRegime</code> in <code>catagg.severity</code>: a method-of-moments
+  beta fit on <code>[0, exposure_value]</code> with probability mass at the endpoints,
+  reproducing each event's mean and standard deviation to machine precision.
+  The endpoint masses are the boundary member of the beta family rather than
+  free parameters, since an ELT row carries two moments and cannot determine
+  four; see the simulation page for why.</li>
+<li><code>simulate(..., secondary_uncertainty=True)</code>, drawing loss given occurrence
+  from that fit. Severity uses a reserved child seed, so switching the flag on
+  leaves the frequency and allocation streams bit-identical. The flag is a
+  no-op, exactly, on an ELT whose variances are all zero.</li>
+<li>Severity validation: per-event moment recovery against Monte Carlo standard
+  errors derived from the fit's own fourth moment, regime assignment at and
+  below the feasibility bound, and end-to-end agreement between the simulated
+  annual loss variance and <code>analytic_annual_loss_variance(...,
+  secondary_uncertainty=True)</code>.</li>
 <li>Simulation documentation page.</li>
 </ul>
 
