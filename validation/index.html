@@ -13,7 +13,7 @@
         <link rel="canonical" href="https://john-amal.github.io/catagg/validation/">
       
       
-        <link rel="prev" href="..">
+        <link rel="prev" href="../simulation/">
       
       
         <link rel="next" href="../api/">
@@ -288,6 +288,33 @@
       
   
   
+  
+  
+    <li class="md-nav__item">
+      <a href="../simulation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Simulation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
     
   
   
@@ -452,35 +479,52 @@ end of the v0.1.0 milestone; no results are published here yet.</p>
 <tr>
 <th>Check</th>
 <th>What it proves</th>
+<th>Status</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td>Simulated AAL against analytic <code>Σ λᵢ · μᵢ</code></td>
 <td>The frequency–severity loop is unbiased</td>
+<td>In CI</td>
 </tr>
 <tr>
 <td>Sampled frequency moments against Poisson / negative binomial</td>
 <td>The sampler matches the specified distribution</td>
+<td>In CI</td>
+</tr>
+<tr>
+<td>Annual loss variance against its closed form</td>
+<td>Clustering is present at the group level, not lost per event</td>
+<td>In CI</td>
 </tr>
 <tr>
 <td>Sampled severity moments against the ELT input</td>
 <td>Method-of-moments beta fitting recovers its own inputs</td>
+<td>Not built</td>
 </tr>
 <tr>
 <td>Ceded loss against the aggregate reinstatement cap</td>
 <td>Reinstatement accounting never over-recovers</td>
+<td>Not built</td>
 </tr>
 <tr>
 <td>Net + ceded = gross, every simulated year</td>
 <td>The financial module conserves loss exactly</td>
+<td>Not built</td>
 </tr>
 <tr>
 <td>Tail-metric standard error against simulation count</td>
 <td>How noisy a given return period estimate actually is</td>
+<td>Not built</td>
 </tr>
 </tbody>
 </table>
+<p>Tolerances in the implemented checks are analytic, not hand-picked: a mean of
+<code>n</code> draws is compared against its own standard error <code>sqrt(Var / n)</code>, computed
+in closed form from the ELT and the frequency model. A fixed percentage
+tolerance would pass a biased engine on a fat-tailed portfolio and fail a
+correct one on a thin portfolio.</p>
 
 
 

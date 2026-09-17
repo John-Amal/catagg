@@ -289,6 +289,33 @@
   
   
     <li class="md-nav__item">
+      <a href="../simulation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Simulation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../validation/" class="md-nav__link">
         
   
@@ -557,6 +584,22 @@ and this project adheres to <a href="https://semver.org/spec/v2.0.0.html">Semant
 <li>Release workflow publishing to PyPI via Trusted Publishing, with a
   tag-versus-package-version guard, and the release procedure documented in
   <code>docs/releasing.md</code>.</li>
+<li>ELT schema with <code>validate_elt</code>, which reports every failed check at once and
+  enforces the feasibility bound <code>std_loss**2 &lt;= mean_loss * (exposure_value -
+  mean_loss)</code>; <code>read_elt</code> for Parquet and CSV.</li>
+<li>Frequency models <code>Poisson</code> and <code>NegativeBinomial</code>, applied to a group's annual
+  event count rather than per event, so that specified over-dispersion survives
+  into the aggregate.</li>
+<li><code>simulate</code>, generating a year event loss table by rate-proportional allocation
+  of each group's annual occurrences; <code>to_ylt</code>, collapsing it to one row per
+  simulated year including years with no events.</li>
+<li><code>write_yelt</code> and <code>read_yelt</code>, round-tripping the simulated year count through
+  Parquet file metadata.</li>
+<li>Closed-form references <code>analytic_aal</code>, <code>analytic_annual_loss_variance</code> and
+  <code>aal_standard_error</code>, used as the tolerances in the convergence tests.</li>
+<li><code>swiss_multiperil_elt</code>, a documented synthetic generator so the repository
+  runs from a clean clone with no data dependencies.</li>
+<li>Simulation documentation page.</li>
 </ul>
 
 
