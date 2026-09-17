@@ -35,6 +35,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `aal_standard_error`, used as the tolerances in the convergence tests.
 - `swiss_multiperil_elt`, a documented synthetic generator so the repository
   runs from a clean clone with no data dependencies.
+- `BetaSeverity` and `SeverityRegime` in `catagg.severity`: a method-of-moments
+  beta fit on `[0, exposure_value]` with probability mass at the endpoints,
+  reproducing each event's mean and standard deviation to machine precision.
+  The endpoint masses are the boundary member of the beta family rather than
+  free parameters, since an ELT row carries two moments and cannot determine
+  four; see the simulation page for why.
+- `simulate(..., secondary_uncertainty=True)`, drawing loss given occurrence
+  from that fit. Severity uses a reserved child seed, so switching the flag on
+  leaves the frequency and allocation streams bit-identical. The flag is a
+  no-op, exactly, on an ELT whose variances are all zero.
+- Severity validation: per-event moment recovery against Monte Carlo standard
+  errors derived from the fit's own fourth moment, regime assignment at and
+  below the feasibility bound, and end-to-end agreement between the simulated
+  annual loss variance and `analytic_annual_loss_variance(...,
+  secondary_uncertainty=True)`.
 - Simulation documentation page.
 
 [Unreleased]: https://github.com/John-Amal/catagg/commits/main

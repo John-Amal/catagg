@@ -92,7 +92,7 @@ If you already work in cat modelling, skip this. If you're reading the code to l
 
 **Frequency.** Poisson, or negative binomial where event clustering matters — European windstorm and hurricane seasons are both over-dispersed, and a Poisson assumption understates the aggregate tail.
 
-**Secondary uncertainty.** Loss given occurrence is sampled from a beta distribution on `[0, exposed_value]`, fitted by moments to the ELT's mean and standard deviation, with probability mass at zero and at full exposure. Degenerate cases — zero variance, or a variance the beta support cannot accommodate — are handled explicitly rather than silently clipped.
+**Secondary uncertainty.** Loss given occurrence is sampled from a beta distribution on `[0, exposed_value]`, fitted by moments to the ELT's mean and standard deviation. At the largest variance the support allows, that fit becomes the two-point law carrying probability mass at zero and at full exposure — the boundary member of the same family, reached continuously, rather than a free parameter. Degenerate cases — zero variance, or a variance the beta support cannot accommodate — are handled explicitly rather than silently clipped.
 
 **Dependence.** Perils are correlated through a Gaussian or Student-t copula applied to annual losses. Independence is the default; the example shows what assuming it costs you in the tail.
 

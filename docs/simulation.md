@@ -3,10 +3,8 @@
 !!! note "v0.1.0 is in development"
 
     This page documents what is implemented today: ELT ingest and validation,
-    frequency sampling, and year event loss table generation. Secondary
-    uncertainty, dependence and the financial module are not yet built, and
-    `simulate(..., secondary_uncertainty=True)` raises `NotImplementedError`
-    rather than quietly returning something else.
+    frequency sampling, secondary uncertainty, and year event loss table
+    generation. Dependence and the financial module are not yet built.
 
 ## The objects
 
@@ -64,6 +62,64 @@ The Poisson case needs no special handling: multinomial thinning of a Poisson
 total yields exactly independent $\text{Poisson}(\lambda_i)$ per-event counts, so
 one code path serves both models.
 
+## Secondary uncertainty is one family, read at three points
+
+With `secondary_uncertainty=True`, loss given occurrence is drawn from a
+method-of-moments fit on $[0, E_i]$ rather than fixed at $\mu_i$. Writing
+$m = \mu_i / E_i$ and $s = \sigma_i / E_i$ for the damage ratio and its
+standard deviation:
+
+$$\nu = \frac{m\,(1 - m)}{s^2} - 1, \qquad \alpha = m\,\nu, \qquad \beta = (1 - m)\,\nu$$
+
+$\nu$ is the concentration, and it is non-negative exactly when
+$s^2 \le m\,(1 - m)$ — the feasibility bound enforced at ingest. Because
+validation runs first, the fit never has to clip a moment it was asked to
+reproduce.
+
+The probability mass at zero and at full exposure is **not a pair of free
+parameters bolted onto the beta**. It is the boundary member of the same
+family. As $\nu \to 0$, the law $\text{Beta}(m\nu, (1-m)\nu)$ converges to the
+Bernoulli law placing $1 - m$ at $0$ and $m$ at $1$, which is the unique
+distribution on $[0, 1]$ attaining the feasibility bound. So `SeverityRegime`
+reads one continuous family at three points:
+
+| Regime | When | Fit |
+|---|---|---|
+| `DEGENERATE` | $\sigma_i = 0$ | All mass at $\mu_i$ |
+| `BETA` | $0 < s^2 < m\,(1-m)$ | Beta on $[0, E_i]$, continuous, no atom |
+| `TWO_POINT` | $s^2 = m\,(1-m)$ | Mass $1 - m$ at $0$ and $m$ at $E_i$ |
+
+This is a deliberate choice and worth stating plainly. A beta *plus* a free
+mass at each endpoint is the more familiar picture of secondary uncertainty,
+and it is what a location-level damage distribution really looks like. But an
+ELT row carries two moments, and two moments cannot determine four parameters.
+Any interior mass would come from a convention invented here rather than from
+the data, and it would propagate silently into every tail metric downstream.
+The two-parameter fit is exactly determined, reproduces both moments to machine
+precision in every regime, and still puts real mass on the endpoints wherever
+the moments demand it. Free endpoint masses belong with a richer input schema,
+not with this one.
+
+Two numerical points fall out of this, and both are tested.
+
+A row sitting exactly on the feasibility bound computes $\nu$ as a few
+multiples of machine epsilon, **of either sign**. Testing $\nu > 0$ would
+therefore label identical rows differently on the last bit, and a fit labelled
+`BETA` reports no endpoint mass for a distribution that in practice produces
+nothing else. The regime boundary is instead tested against the same relative
+slack `validate_elt` allows on the bound, so the two cannot drift apart.
+
+A `std_loss` that is positive but vanishing against `exposure_value` underflows
+the scaled variance and sends $\nu$ to infinity. That is a `DEGENERATE` fit, not
+a `TWO_POINT` one: routing it to the endpoints would replace a variance of
+nearly zero with the largest the support allows.
+
+The AAL is unchanged by the flag, since the severity mean is $\mu_i$ either way.
+What changes is everything above the first moment: the variance of the annual
+aggregate loss gains $\sum_i \lambda_i \sigma_i^2$, and
+`analytic_annual_loss_variance(..., secondary_uncertainty=True)` is the closed
+form the simulation is checked against.
+
 ## Empty years are not optional
 
 A year in which nothing happened contributes no rows to the YELT, so the
@@ -95,6 +151,8 @@ every year's count is drawn before any uniform, results are identical for any
       members: [validate_elt, read_elt]
 
 ::: catagg.frequency.models
+
+::: catagg.severity.beta
 
 ::: catagg.simulate.engine
     options:

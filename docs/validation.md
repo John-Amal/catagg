@@ -12,7 +12,7 @@ The suite this page will report on, each check running in CI:
 | Simulated AAL against analytic `Σ λᵢ · μᵢ` | The frequency–severity loop is unbiased | In CI |
 | Sampled frequency moments against Poisson / negative binomial | The sampler matches the specified distribution | In CI |
 | Annual loss variance against its closed form | Clustering is present at the group level, not lost per event | In CI |
-| Sampled severity moments against the ELT input | Method-of-moments beta fitting recovers its own inputs | Not built |
+| Sampled severity moments against the ELT input | Method-of-moments beta fitting recovers its own inputs | In CI |
 | Ceded loss against the aggregate reinstatement cap | Reinstatement accounting never over-recovers | Not built |
 | Net + ceded = gross, every simulated year | The financial module conserves loss exactly | Not built |
 | Tail-metric standard error against simulation count | How noisy a given return period estimate actually is | Not built |
@@ -22,3 +22,9 @@ Tolerances in the implemented checks are analytic, not hand-picked: a mean of
 in closed form from the ELT and the frequency model. A fixed percentage
 tolerance would pass a biased engine on a fat-tailed portfolio and fail a
 correct one on a thin portfolio.
+
+The severity check applies the same rule at the second moment: the sample
+variance of `n` draws is compared against `sqrt((mu_4 - sigma**4) / n)`, with
+the fourth central moment taken from the fit's own closed-form moments. Each
+assertion also carries a guard on its own detection power, so a run too short
+to prove anything fails rather than passing quietly.
