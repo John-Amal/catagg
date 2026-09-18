@@ -15,7 +15,14 @@ from catagg.io import (
     validate_elt,
     write_yelt,
 )
-from catagg.metrics import aal_standard_error, analytic_aal, analytic_annual_loss_variance
+from catagg.metrics import (
+    STANDARD_RETURN_PERIODS,
+    EPCurve,
+    aal_standard_error,
+    analytic_aal,
+    analytic_annual_loss_variance,
+    ep_curve,
+)
 from catagg.severity import BetaSeverity, SeverityRegime
 from catagg.simulate import simulate, to_ylt
 
@@ -24,11 +31,13 @@ __version__ = "0.1.0.dev0"
 __all__ = [
     "ELT_COLUMNS",
     "ELT_DTYPES",
+    "STANDARD_RETURN_PERIODS",
     "YELT_COLUMNS",
     "YELT_DTYPES",
     "BetaSeverity",
     "CataggError",
     "ELTValidationError",
+    "EPCurve",
     "FrequencyModel",
     "NegativeBinomial",
     "Poisson",
@@ -37,6 +46,7 @@ __all__ = [
     "aal_standard_error",
     "analytic_aal",
     "analytic_annual_loss_variance",
+    "ep_curve",
     "read_elt",
     "read_yelt",
     "simulate",

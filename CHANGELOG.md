@@ -50,6 +50,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   below the feasibility bound, and end-to-end agreement between the simulated
   annual loss variance and `analytic_annual_loss_variance(...,
   secondary_uncertainty=True)`.
-- Simulation documentation page.
+- `ep_curve` and `EPCurve` in `catagg.metrics`: OEP and AEP curves built from a
+  YELT or a YLT, with `at_return_period`, `tvar`, `to_frame` and the curve mean.
+  Quantiles use the Weibull plotting position, which is unbiased for the
+  exceedance probability of an order statistic; the `k / n` convention is not.
+- Monte Carlo standard errors on every figure those methods return. The quantile
+  error perturbs the probability level by the sampling deviation of the
+  empirical CDF, so it needs no bandwidth constant. The TVaR error adds a
+  `(1 - p) * (TVaR - VaR) ** 2` term for the uncertainty in the exceedance
+  threshold; without it the naive tail-mean error understates the truth by
+  between a fifth and a third. Both are checked against a replication study
+  rather than asserted.
+- `at_return_period` and `tvar` refuse return periods longer than the
+  simulation, rather than returning the largest simulated year as though it were
+  a return period.
+- `catagg.plot.ep_comparison`, drawing EP curves with their standard error band.
+  matplotlib is an optional extra (`pip install catagg[plot]`), not a runtime
+  dependency.
+- Simulation and metrics documentation pages.
 
 [Unreleased]: https://github.com/John-Amal/catagg/commits/main

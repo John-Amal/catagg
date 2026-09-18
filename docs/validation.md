@@ -15,7 +15,8 @@ The suite this page will report on, each check running in CI:
 | Sampled severity moments against the ELT input | Method-of-moments beta fitting recovers its own inputs | In CI |
 | Ceded loss against the aggregate reinstatement cap | Reinstatement accounting never over-recovers | Not built |
 | Net + ceded = gross, every simulated year | The financial module conserves loss exactly | Not built |
-| Tail-metric standard error against simulation count | How noisy a given return period estimate actually is | Not built |
+| Tail-metric standard error against simulation count | How noisy a given return period estimate actually is | In CI |
+| Reported standard error against replication | The error the library reports predicts the spread across independent reruns | In CI |
 
 Tolerances in the implemented checks are analytic, not hand-picked: a mean of
 `n` draws is compared against its own standard error `sqrt(Var / n)`, computed

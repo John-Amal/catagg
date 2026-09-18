@@ -11,5 +11,13 @@ from catagg.metrics.analytic import (
     analytic_aal,
     analytic_annual_loss_variance,
 )
+from catagg.metrics.ep import STANDARD_RETURN_PERIODS, EPCurve, ep_curve
 
-__all__ = ["aal_standard_error", "analytic_aal", "analytic_annual_loss_variance"]
+__all__ = [
+    "STANDARD_RETURN_PERIODS",
+    "EPCurve",
+    "aal_standard_error",
+    "analytic_aal",
+    "analytic_annual_loss_variance",
+    "ep_curve",
+]
