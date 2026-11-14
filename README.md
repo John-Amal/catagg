@@ -17,7 +17,7 @@ A reinsurer holds a portfolio exposed to several perils. The catastrophe models 
 
 `catagg` answers both. It simulates the year loss table, builds the gross exceedance probability curves, applies the reinsurance structures in the correct order, and returns gross, ceded and net views — with the validation checks that show the answer can be trusted.
 
-![Gross versus net OEP curve for the example Swiss multi-peril portfolio](docs/img/gross_vs_net_oep.png)
+![Gross versus net OEP curve for the example Swiss multi-peril portfolio](https://raw.githubusercontent.com/John-Amal/catagg/main/docs/img/gross_vs_net_oep.png)
 
 *Example portfolio: three perils, 20% quota share, a 50m xs 50m per-occurrence layer with two reinstatements, and a 100m aggregate stop-loss. The programme removes roughly two thirds of the 200-year occurrence loss — and the reinstatement cap is visible as the point where the net curve stops flattening.*
 

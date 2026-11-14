@@ -95,7 +95,7 @@ def test_empty_peril_label_is_rejected(tiny_elt: pd.DataFrame) -> None:
 def test_all_failures_are_reported_together(tiny_elt: pd.DataFrame) -> None:
     tiny_elt.loc[0, "rate"] = -1.0
     tiny_elt.loc[1, "mean_loss"] = -1.0
-    tiny_elt.loc[2, "event_id"] = tiny_elt.loc[3, "event_id"]
+    tiny_elt.loc[[2], "event_id"] = tiny_elt.loc[[3], "event_id"].to_numpy()
     with pytest.raises(ELTValidationError) as error:
         validate_elt(tiny_elt)
     message = str(error.value)
