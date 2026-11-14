@@ -16,14 +16,14 @@
         <link rel="prev" href="../simulation/">
       
       
-        <link rel="next" href="../validation/">
+        <link rel="next" href="../financial/">
       
       
         
       
       
       <link rel="icon" href="../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.8.1">
     
     
       
@@ -31,10 +31,10 @@
       
     
     
-      <link rel="stylesheet" href="../assets/stylesheets/main.ec1eaa64.min.css">
+      <link rel="stylesheet" href="../assets/stylesheets/main.57a0d79d.min.css">
       
         
-        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
+        <link rel="stylesheet" href="../assets/stylesheets/palette.fb2fffe2.min.css">
       
       
 
@@ -647,6 +647,33 @@
   
   
     <li class="md-nav__item">
+      <a href="../financial/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Financial structures
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../validation/" class="md-nav__link">
         
   
@@ -1053,8 +1080,9 @@
 <div class="admonition note">
 <p class="admonition-title">v0.1.0 is in development</p>
 <p>This page documents the gross view: EP curves, tail metrics and their Monte
-Carlo error. The financial module that produces ceded and net curves is not
-yet built.</p>
+Carlo error. For ceded and net curves, pass the result of a reinsurance
+programme with <code>column="ceded_loss"</code> or <code>column="net_loss"</code>; see
+<a href="../financial/">Financial structures</a>.</p>
 </div>
 <p>An exceedance probability curve is the empirical distribution of a per-year
 loss, read from the tail. Two of them matter, and they answer different
@@ -1917,7 +1945,7 @@ simulating; agreement between the two is a check on both.</p>
       <tbody>
           <tr class="doc-section-item">
             <td>
-                  <code><span title="pandas.DataFrame">DataFrame</span></code>
+                  <code>DataFrame</code>
             </td>
             <td>
               <div class="doc-md-description">
@@ -2132,7 +2160,7 @@ continuous in the return period.</p>
       <tbody>
           <tr class="doc-section-item">
             <td>
-                  <code><span title="pandas.DataFrame">DataFrame</span></code>
+                  <code>DataFrame</code>
             </td>
             <td>
               <div class="doc-md-description">
@@ -2330,7 +2358,7 @@ simulated years.</p>
       <tbody>
           <tr class="doc-section-item">
             <td>
-                  <code><span title="pandas.DataFrame">DataFrame</span></code>
+                  <code>DataFrame</code>
             </td>
             <td>
               <div class="doc-md-description">
@@ -2408,7 +2436,7 @@ ordered from the largest loss down.</p>
 
 
 <a href="#catagg.metrics.ep.ep_curve" class="headerlink" title="Permanent link">&para;</a></h3>
-<div class="doc-signature highlight"><pre><span></span><code><span class="nf">ep_curve</span><span class="p">(</span><span class="n">losses</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="s1">'OEP'</span><span class="p">)</span>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">ep_curve</span><span class="p">(</span><span class="n">losses</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="s1">'OEP'</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
 </code></pre></div>
 
     <div class="doc doc-contents ">
@@ -2461,6 +2489,25 @@ aggregate.</p>
                   <code>&#39;OEP&#39;</code>
             </td>
           </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>column</code>
+            </td>
+            <td>
+                  <code><span title="str">str</span> | None</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>For a YELT, the per-occurrence loss column to use: <code>"gross_loss"</code>
+(the default), or <code>"ceded_loss"</code> or <code>"net_loss"</code> from a reinsurance
+programme's result. Not accepted with a YLT, which has already
+collapsed its occurrences.</p>
+              </div>
+            </td>
+            <td>
+                  <code>None</code>
+            </td>
+          </tr>
       </tbody>
     </table>
 
@@ -2508,8 +2555,9 @@ aggregate.</p>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>If <code>kind</code> is not <code>"OEP"</code> or <code>"AEP"</code>, or the frame is neither a
-YELT nor a YLT.</p>
+                <p>If <code>kind</code> is not <code>"OEP"</code> or <code>"AEP"</code>, the frame is neither a YELT
+nor a YLT, <code>column</code> is missing from it, or <code>column</code> is given with a
+YLT.</p>
               </div>
             </td>
           </tr>
@@ -2575,7 +2623,20 @@ YELT nor a YLT.</p>
 <span class="normal">351</span>
 <span class="normal">352</span>
 <span class="normal">353</span>
-<span class="normal">354</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">ep_curve</span><span class="p">(</span><span class="n">losses</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">kind</span><span class="p">:</span> <span class="n">EPKind</span> <span class="o">=</span> <span class="s2">"OEP"</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">EPCurve</span><span class="p">:</span>
+<span class="normal">354</span>
+<span class="normal">355</span>
+<span class="normal">356</span>
+<span class="normal">357</span>
+<span class="normal">358</span>
+<span class="normal">359</span>
+<span class="normal">360</span>
+<span class="normal">361</span>
+<span class="normal">362</span>
+<span class="normal">363</span>
+<span class="normal">364</span>
+<span class="normal">365</span>
+<span class="normal">366</span>
+<span class="normal">367</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">ep_curve</span><span class="p">(</span><span class="n">losses</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">kind</span><span class="p">:</span> <span class="n">EPKind</span> <span class="o">=</span> <span class="s2">"OEP"</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">column</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">EPCurve</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">"""Build an exceedance probability curve from a YELT or a YLT.</span>
 
 <span class="sd">    Parameters</span>
@@ -2586,6 +2647,11 @@ YELT nor a YLT.</p>
 <span class="sd">    kind</span>
 <span class="sd">        ``"OEP"`` for the annual maximum occurrence, ``"AEP"`` for the annual</span>
 <span class="sd">        aggregate.</span>
+<span class="sd">    column</span>
+<span class="sd">        For a YELT, the per-occurrence loss column to use: ``"gross_loss"``</span>
+<span class="sd">        (the default), or ``"ceded_loss"`` or ``"net_loss"`` from a reinsurance</span>
+<span class="sd">        programme's result. Not accepted with a YLT, which has already</span>
+<span class="sd">        collapsed its occurrences.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -2595,8 +2661,9 @@ YELT nor a YLT.</p>
 <span class="sd">    Raises</span>
 <span class="sd">    ------</span>
 <span class="sd">    CataggError</span>
-<span class="sd">        If ``kind`` is not ``"OEP"`` or ``"AEP"``, or the frame is neither a</span>
-<span class="sd">        YELT nor a YLT.</span>
+<span class="sd">        If ``kind`` is not ``"OEP"`` or ``"AEP"``, the frame is neither a YELT</span>
+<span class="sd">        nor a YLT, ``column`` is missing from it, or ``column`` is given with a</span>
+<span class="sd">        YLT.</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
@@ -2611,18 +2678,25 @@ YELT nor a YLT.</p>
     <span class="k">if</span> <span class="n">kind</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">_SOURCE_COLUMN</span><span class="p">:</span>
         <span class="k">raise</span> <span class="n">CataggError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"kind must be 'OEP' or 'AEP', got </span><span class="si">{</span><span class="n">kind</span><span class="si">!r}</span><span class="s2">."</span><span class="p">)</span>
 
-    <span class="n">column</span> <span class="o">=</span> <span class="n">_SOURCE_COLUMN</span><span class="p">[</span><span class="n">kind</span><span class="p">]</span>
-    <span class="k">if</span> <span class="n">column</span> <span class="ow">in</span> <span class="n">losses</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+    <span class="n">source</span> <span class="o">=</span> <span class="n">_SOURCE_COLUMN</span><span class="p">[</span><span class="n">kind</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">source</span> <span class="ow">in</span> <span class="n">losses</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">column</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">CataggError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">"column=</span><span class="si">{</span><span class="n">column</span><span class="si">!r}</span><span class="s2"> applies to a YELT, but this is a YLT: its "</span>
+                <span class="s2">"occurrences are already collapsed."</span>
+            <span class="p">)</span>
         <span class="n">ylt</span> <span class="o">=</span> <span class="n">losses</span>
+    <span class="k">elif</span> <span class="n">column</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">ylt</span> <span class="o">=</span> <span class="n">to_ylt</span><span class="p">(</span><span class="n">losses</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="n">column</span><span class="p">)</span>
     <span class="k">elif</span> <span class="s2">"gross_loss"</span> <span class="ow">in</span> <span class="n">losses</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
         <span class="n">ylt</span> <span class="o">=</span> <span class="n">to_ylt</span><span class="p">(</span><span class="n">losses</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">raise</span> <span class="n">CataggError</span><span class="p">(</span>
             <span class="s2">"losses must be a YELT (with a gross_loss column) or a YLT (with "</span>
-            <span class="sa">f</span><span class="s2">"a </span><span class="si">{</span><span class="n">column</span><span class="si">}</span><span class="s2"> column); got columns </span><span class="si">{</span><span class="nb">list</span><span class="p">(</span><span class="n">losses</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span><span class="si">}</span><span class="s2">."</span>
+            <span class="sa">f</span><span class="s2">"a </span><span class="si">{</span><span class="n">source</span><span class="si">}</span><span class="s2"> column); got columns </span><span class="si">{</span><span class="nb">list</span><span class="p">(</span><span class="n">losses</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span><span class="si">}</span><span class="s2">."</span>
         <span class="p">)</span>
 
-    <span class="k">return</span> <span class="n">EPCurve</span><span class="p">(</span><span class="n">losses</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">ylt</span><span class="p">[</span><span class="n">column</span><span class="p">]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">(</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)),</span> <span class="n">kind</span><span class="o">=</span><span class="n">kind</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">EPCurve</span><span class="p">(</span><span class="n">losses</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">ylt</span><span class="p">[</span><span class="n">source</span><span class="p">]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">(</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)),</span> <span class="n">kind</span><span class="o">=</span><span class="n">kind</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>
@@ -2812,7 +2886,7 @@ two years to the length of the shortest simulation.</p>
       <tbody>
           <tr class="doc-section-item">
             <td>
-                  <code><span title="matplotlib.axes.Axes">Axes</span></code>
+                  <code>Axes</code>
             </td>
             <td>
               <div class="doc-md-description">
@@ -3089,10 +3163,10 @@ installed.</p>
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["content.code.copy", "navigation.sections", "navigation.top", "search.suggest", "toc.follow"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["content.code.copy", "navigation.sections", "navigation.top", "search.suggest", "toc.follow"], "search": "../assets/javascripts/workers/search.a7633da7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../assets/javascripts/bundle.d7400e89.min.js"></script>
+      <script src="../assets/javascripts/bundle.a5f9d56c.min.js"></script>
       
         <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
       

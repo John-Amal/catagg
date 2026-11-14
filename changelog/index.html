@@ -21,7 +21,7 @@
       
       
       <link rel="icon" href="../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.8.1">
     
     
       
@@ -29,10 +29,10 @@
       
     
     
-      <link rel="stylesheet" href="../assets/stylesheets/main.ec1eaa64.min.css">
+      <link rel="stylesheet" href="../assets/stylesheets/main.57a0d79d.min.css">
       
         
-        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
+        <link rel="stylesheet" href="../assets/stylesheets/palette.fb2fffe2.min.css">
       
       
 
@@ -343,6 +343,33 @@
   
   
     <li class="md-nav__item">
+      <a href="../financial/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Financial structures
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../validation/" class="md-nav__link">
         
   
@@ -496,6 +523,17 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#changed" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Changed
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#added" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -558,6 +596,17 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#changed" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Changed
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#added" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -598,13 +647,39 @@
 <p>The format follows <a href="https://keepachangelog.com/en/1.1.0/">Keep a Changelog</a>,
 and this project adheres to <a href="https://semver.org/spec/v2.0.0.html">Semantic Versioning</a>.</p>
 <h2 id="unreleased"><a href="https://github.com/John-Amal/catagg/commits/main">Unreleased</a><a class="headerlink" href="#unreleased" title="Permanent link">&para;</a></h2>
+<h3 id="changed">Changed<a class="headerlink" href="#changed" title="Permanent link">&para;</a></h3>
+<ul>
+<li><code>simulate</code> now puts each year's occurrences in chronological order, drawn as
+  a uniform random permutation from a reserved child seed, and
+  <code>occurrence_index</code> is documented as that order. Previously occurrences were
+  grouped by peril in alphabetical order within each year, which would have
+  biased any cover consumed event by event towards the first peril. For a
+  fixed seed the YELT contains the same rows as before; only their order within
+  each year differs, so every order-free metric is unchanged.</li>
+</ul>
 <h3 id="added">Added<a class="headerlink" href="#added" title="Permanent link">&para;</a></h3>
 <ul>
-<li>Repository scaffolding generated from the shared template: hatchling build
+<li>Financial module: <code>QuotaShare</code>, <code>ExcessOfLoss</code> (per occurrence, with a
+  required number of reinstatements and the annual cap
+  <code>limit * (1 + reinstatements)</code>), and <code>AggregateStopLoss</code>, chained by
+  <code>Programme</code> in inuring order. <code>Programme.apply</code> returns a <code>ProgrammeResult</code>
+  with gross, ceded and net loss per occurrence and each structure's cession.
+  Limited covers are consumed in chronological order within each year.
+  <code>net_loss + ceded_loss</code> equals <code>gross_loss</code> to within one unit in the last
+  place on every occurrence, and every structure's cession is checked to lie
+  between zero and the loss it was offered.</li>
+<li>A <code>Structure</code> protocol, so custom structures can join a programme.</li>
+<li>
+<p><code>column=</code> on <code>to_ylt</code> and <code>ep_curve</code>, to build curves from <code>ceded_loss</code> or
+  <code>net_loss</code>.</p>
+</li>
+<li>
+<p>Repository scaffolding generated from the shared template: hatchling build
   with src layout, ruff and mypy configuration, pytest setup, GitHub Actions
   CI (lint, type-check, five-way test matrix, docs build, distribution build),
   MkDocs Material documentation site, MIT licence, issue and pull request
-  templates.</li>
+  templates.</p>
+</li>
 <li>Empty subpackages fixing the module layout: <code>io</code>, <code>frequency</code>, <code>severity</code>,
   <code>dependence</code>, <code>simulate</code>, <code>financial</code>, <code>metrics</code>.</li>
 <li>Packaging tests: version/metadata drift and <code>py.typed</code> installation.</li>
@@ -719,10 +794,10 @@ and this project adheres to <a href="https://semver.org/spec/v2.0.0.html">Semant
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["content.code.copy", "navigation.sections", "navigation.top", "search.suggest", "toc.follow"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["content.code.copy", "navigation.sections", "navigation.top", "search.suggest", "toc.follow"], "search": "../assets/javascripts/workers/search.a7633da7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../assets/javascripts/bundle.d7400e89.min.js"></script>
+      <script src="../assets/javascripts/bundle.a5f9d56c.min.js"></script>
       
         <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
       

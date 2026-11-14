@@ -1,0 +1,3529 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Catastrophe loss aggregation, from event loss tables to net exceedance probability curves.">
+      
+      
+      
+        <link rel="canonical" href="https://john-amal.github.io/catagg/financial/">
+      
+      
+        <link rel="prev" href="../metrics/">
+      
+      
+        <link rel="next" href="../validation/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.8.1">
+    
+    
+      
+        <title>Financial structures - catagg</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.57a0d79d.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.fb2fffe2.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/_mkdocstrings.css">
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#financial-structures" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="catagg" class="md-header__button md-logo" aria-label="catagg" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            catagg
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Financial structures
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/John-Amal/catagg" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    John-Amal/catagg
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="catagg" class="md-nav__button md-logo" aria-label="catagg" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    catagg
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/John-Amal/catagg" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    John-Amal/catagg
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../simulation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Simulation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../metrics/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Metrics
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Financial structures
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Financial structures
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#programme-order-is-inuring-order" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Programme order is inuring order
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#structures" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Structures
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#order-within-the-year" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Order within the year
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#conservation-in-floating-point" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Conservation, in floating point
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#api" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        API
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#catagg.financial.structures" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        structures
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="structures">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#catagg.financial.structures.Structure" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Structure
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Structure">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#catagg.financial.structures.Structure.label" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        label
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#catagg.financial.structures.Structure.cede" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        cede
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#catagg.financial.structures.QuotaShare" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        QuotaShare
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="QuotaShare">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#catagg.financial.structures.QuotaShare.cede" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        cede
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#catagg.financial.structures.ExcessOfLoss" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ExcessOfLoss
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="ExcessOfLoss">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#catagg.financial.structures.ExcessOfLoss.annual_limit" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        annual_limit
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#catagg.financial.structures.ExcessOfLoss.cede" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        cede
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#catagg.financial.structures.AggregateStopLoss" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        AggregateStopLoss
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="AggregateStopLoss">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#catagg.financial.structures.AggregateStopLoss.cede" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        cede
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#catagg.financial.programme" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        programme
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="programme">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#catagg.financial.programme.ProgrammeResult" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ProgrammeResult
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="ProgrammeResult">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#catagg.financial.programme.ProgrammeResult.n_years" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        n_years
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#catagg.financial.programme.Programme" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Programme
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Programme">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#catagg.financial.programme.Programme.structures" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        structures
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#catagg.financial.programme.Programme.apply" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        apply
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../validation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Validation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API reference
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../releasing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Releasing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../changelog/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Changelog
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#programme-order-is-inuring-order" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Programme order is inuring order
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#structures" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Structures
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#order-within-the-year" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Order within the year
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#conservation-in-floating-point" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Conservation, in floating point
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#api" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        API
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#catagg.financial.structures" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        structures
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="structures">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#catagg.financial.structures.Structure" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Structure
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Structure">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#catagg.financial.structures.Structure.label" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        label
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#catagg.financial.structures.Structure.cede" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        cede
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#catagg.financial.structures.QuotaShare" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        QuotaShare
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="QuotaShare">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#catagg.financial.structures.QuotaShare.cede" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        cede
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#catagg.financial.structures.ExcessOfLoss" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ExcessOfLoss
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="ExcessOfLoss">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#catagg.financial.structures.ExcessOfLoss.annual_limit" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        annual_limit
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#catagg.financial.structures.ExcessOfLoss.cede" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        cede
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#catagg.financial.structures.AggregateStopLoss" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        AggregateStopLoss
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="AggregateStopLoss">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#catagg.financial.structures.AggregateStopLoss.cede" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        cede
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#catagg.financial.programme" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        programme
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="programme">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#catagg.financial.programme.ProgrammeResult" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ProgrammeResult
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="ProgrammeResult">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#catagg.financial.programme.ProgrammeResult.n_years" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        n_years
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#catagg.financial.programme.Programme" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Programme
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Programme">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#catagg.financial.programme.Programme.structures" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        structures
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#catagg.financial.programme.Programme.apply" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        apply
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="financial-structures">Financial structures<a class="headerlink" href="#financial-structures" title="Permanent link">&para;</a></h1>
+<div class="admonition note">
+<p class="admonition-title">v0.1.0 is in development</p>
+<p>This page documents loss-side reinsurance mechanics. Premium, ceding
+commission and reinstatement premium are not yet modelled.</p>
+</div>
+<p>A <code>Programme</code> applies reinsurance structures to a simulated YELT and returns
+gross, ceded and net loss on every occurrence.</p>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">catagg</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">ca</span>
+
+<span class="n">elt</span> <span class="o">=</span> <span class="n">ca</span><span class="o">.</span><span class="n">swiss_multiperil_elt</span><span class="p">(</span><span class="n">n_events</span><span class="o">=</span><span class="mi">1_000</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">yelt</span> <span class="o">=</span> <span class="n">ca</span><span class="o">.</span><span class="n">simulate</span><span class="p">(</span><span class="n">elt</span><span class="p">,</span> <span class="n">n_years</span><span class="o">=</span><span class="mi">100_000</span><span class="p">,</span> <span class="n">secondary_uncertainty</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
+
+<span class="n">programme</span> <span class="o">=</span> <span class="n">ca</span><span class="o">.</span><span class="n">Programme</span><span class="p">([</span>
+    <span class="n">ca</span><span class="o">.</span><span class="n">QuotaShare</span><span class="p">(</span><span class="n">cession</span><span class="o">=</span><span class="mf">0.20</span><span class="p">),</span>
+    <span class="n">ca</span><span class="o">.</span><span class="n">ExcessOfLoss</span><span class="p">(</span><span class="n">attachment</span><span class="o">=</span><span class="mf">50e6</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="mf">50e6</span><span class="p">,</span> <span class="n">reinstatements</span><span class="o">=</span><span class="mi">2</span><span class="p">),</span>
+    <span class="n">ca</span><span class="o">.</span><span class="n">AggregateStopLoss</span><span class="p">(</span><span class="n">attachment</span><span class="o">=</span><span class="mf">100e6</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="mf">100e6</span><span class="p">),</span>
+<span class="p">])</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">programme</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">yelt</span><span class="p">)</span>
+
+<span class="n">gross</span> <span class="o">=</span> <span class="n">ca</span><span class="o">.</span><span class="n">ep_curve</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">yelt</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="s2">"OEP"</span><span class="p">)</span>
+<span class="n">net</span> <span class="o">=</span> <span class="n">ca</span><span class="o">.</span><span class="n">ep_curve</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">yelt</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="s2">"OEP"</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="s2">"net_loss"</span><span class="p">)</span>
+</code></pre></div>
+<p><code>result.yelt</code> holds <code>gross_loss</code>, <code>ceded_loss</code> and <code>net_loss</code> side by side, and
+<code>result.ceded_by_structure</code> holds each structure's own cession, labelled by
+position: <code>1_quota_share</code>, <code>2_excess_of_loss</code>, <code>3_aggregate_stop_loss</code>.</p>
+<h2 id="programme-order-is-inuring-order">Programme order is inuring order<a class="headerlink" href="#programme-order-is-inuring-order" title="Permanent link">&para;</a></h2>
+<p>Each structure protects what the structures before it left retained. In the
+programme above the quota share takes 20% of every gross loss; the 50m xs 50m
+layer then responds to the retained 80%, not to the gross; and the stop-loss
+responds to what the layer left. Reversing two structures changes the answer,
+so the order in the list is the order of application.</p>
+<h2 id="structures">Structures<a class="headerlink" href="#structures" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Structure</th>
+<th>Pays, per occurrence</th>
+<th>Running total</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>QuotaShare(cession)</code></td>
+<td><code>cession × retained</code></td>
+<td>None</td>
+</tr>
+<tr>
+<td><code>ExcessOfLoss(attachment, limit, reinstatements)</code></td>
+<td>Retained loss above <code>attachment</code>, up to <code>limit</code></td>
+<td>Annual cap <code>limit × (1 + reinstatements)</code>, or none if <code>reinstatements=None</code></td>
+</tr>
+<tr>
+<td><code>AggregateStopLoss(attachment, limit)</code></td>
+<td>Its share of the annual recovery above <code>attachment</code></td>
+<td>Annual deductible, then annual <code>limit</code></td>
+</tr>
+</tbody>
+</table>
+<p><code>reinstatements</code> has no default. Market terms vary too much for any default to
+be safe, and a silently assumed one would change every net figure.</p>
+<p><code>AggregateStopLoss</code> takes its attachment and limit in money, which also makes
+it an aggregate excess of loss. A stop-loss quoted as a loss ratio converts to
+this form given the subject premium.</p>
+<h2 id="order-within-the-year">Order within the year<a class="headerlink" href="#order-within-the-year" title="Permanent link">&para;</a></h2>
+<p>The per-occurrence layer's annual cap and the stop-loss's deductible and limit
+are consumed in chronological order, using <code>occurrence_index</code> (see
+<a href="../simulation/#occurrence-order-is-chronological">Simulation</a>). A 50 xs 50
+layer with two reinstatements pays at most 150 a year. Given layer losses of
+30, 50, 50 and 40 in that order, the fourth recovers only the 20 left. In the
+reverse order it is the 30 that is cut, to 10.</p>
+<p>Order never changes a structure's annual total, so AAL and AEP of ceded and net
+loss are unaffected by it. It does change which occurrence is cut off, and so
+the net loss per occurrence and the <strong>net OEP</strong>. Allocating the stop-loss
+recovery the same way is what gives a net OEP after an aggregate cover a
+definite meaning.</p>
+<h2 id="conservation-in-floating-point">Conservation, in floating point<a class="headerlink" href="#conservation-in-floating-point" title="Permanent link">&para;</a></h2>
+<p>Net loss is what remains after each structure's cession is taken off in turn,
+and <code>ceded_loss</code> is computed once, as <code>gross_loss − net_loss</code>. With that
+construction <code>net_loss + ceded_loss</code> equals <code>gross_loss</code> to within one unit in
+the last place on every occurrence: rounding one subtraction moves the result
+by at most half a unit, and adding back at most doubles it.</p>
+<p>That is the strongest form the identity can take in floating point. A bitwise
+equality is not attainable: for a 20% quota share alone, a few percent of
+occurrences differ from gross by one unit in the last place, whatever order the
+arithmetic is done in.</p>
+<p><code>Programme.apply</code> also checks every structure's cession, including structures
+written outside the library against the <code>Structure</code> protocol: none may be
+negative, and none may exceed the loss it was offered. So net loss can never go
+negative.</p>
+<h2 id="api">API<a class="headerlink" href="#api" title="Permanent link">&para;</a></h2>
+
+
+<div class="doc doc-object doc-module">
+
+
+
+<h2 id="catagg.financial.structures" class="doc doc-heading">
+            <span class="doc doc-object-name doc-module-name">catagg.financial.structures</span>
+
+
+<a href="#catagg.financial.structures" class="headerlink" title="Permanent link">&para;</a></h2>
+
+    <div class="doc doc-contents first">
+
+        <p>Reinsurance structures.</p>
+<p>Each structure is told what the cedant still retains on every occurrence, after
+the structures ahead of it in the programme, and returns how much of that it
+takes. Every cession is non-negative and never exceeds the retained loss it was
+offered; <code>Programme.apply</code> checks this for every structure, including ones
+written outside this module against the <code>Structure</code> protocol.</p>
+<p>Only loss is modelled. Premium, ceding commission and reinstatement premium are
+cash flows beside the loss and do not enter <code>net + ceded = gross</code>.</p>
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-class">
+
+
+
+<h3 id="catagg.financial.structures.Structure" class="doc doc-heading">
+            <span class="doc doc-object-name doc-class-name">Structure</span>
+
+
+<a href="#catagg.financial.structures.Structure" class="headerlink" title="Permanent link">&para;</a></h3>
+
+
+    <div class="doc doc-contents ">
+            <p class="doc doc-class-bases">
+              Bases: <code><span title="typing.Protocol">Protocol</span></code></p>
+
+
+
+        <p>What <code>Programme</code> requires of a reinsurance structure.</p>
+
+
+
+
+
+
+
+
+              <details class="mkdocstrings-source">
+                <summary>Source code in <code>src/catagg/financial/structures.py</code></summary>
+                <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">28</span>
+<span class="normal">29</span>
+<span class="normal">30</span>
+<span class="normal">31</span>
+<span class="normal">32</span>
+<span class="normal">33</span>
+<span class="normal">34</span>
+<span class="normal">35</span>
+<span class="normal">36</span>
+<span class="normal">37</span>
+<span class="normal">38</span>
+<span class="normal">39</span>
+<span class="normal">40</span>
+<span class="normal">41</span>
+<span class="normal">42</span>
+<span class="normal">43</span>
+<span class="normal">44</span>
+<span class="normal">45</span>
+<span class="normal">46</span>
+<span class="normal">47</span>
+<span class="normal">48</span>
+<span class="normal">49</span>
+<span class="normal">50</span>
+<span class="normal">51</span>
+<span class="normal">52</span>
+<span class="normal">53</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@runtime_checkable</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">Structure</span><span class="p">(</span><span class="n">Protocol</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""What `Programme` requires of a reinsurance structure."""</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">label</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Short snake_case name used to label the structure's result column."""</span>
+        <span class="o">...</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">cede</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">retained</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">],</span> <span class="n">years</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">"""Return the amount ceded on each occurrence.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        retained</span>
+<span class="sd">            Loss still retained on each occurrence before this structure.</span>
+<span class="sd">        years</span>
+<span class="sd">            Simulated year of each occurrence. Occurrences are sorted by year</span>
+<span class="sd">            and chronologically within it.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        numpy.ndarray</span>
+<span class="sd">            Amount ceded, between zero and ``retained``, on each occurrence.</span>
+<span class="sd">        """</span>
+        <span class="o">...</span>
+</code></pre></div></td></tr></table></div>
+              </details>
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h4 id="catagg.financial.structures.Structure.label" class="doc doc-heading">
+            <span class="doc doc-object-name doc-attribute-name">label</span>
+
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-property"><code>property</code></small>
+  </span>
+
+<a href="#catagg.financial.structures.Structure.label" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="n">label</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Short snake_case name used to label the structure's result column.</p>
+
+    </div>
+
+</div>
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="catagg.financial.structures.Structure.cede" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">cede</span>
+
+
+<a href="#catagg.financial.structures.Structure.cede" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">cede</span><span class="p">(</span><span class="n">retained</span><span class="p">,</span> <span class="n">years</span><span class="p">)</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Return the amount ceded on each occurrence.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>retained</code>
+            </td>
+            <td>
+                  <code><span title="numpy.typing.NDArray">NDArray</span>[<span title="numpy.float64">float64</span>]</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Loss still retained on each occurrence before this structure.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>years</code>
+            </td>
+            <td>
+                  <code><span title="numpy.typing.NDArray">NDArray</span>[<span title="numpy.int64">int64</span>]</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Simulated year of each occurrence. Occurrences are sorted by year
+and chronologically within it.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code>ndarray</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Amount ceded, between zero and <code>retained</code>, on each occurrence.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+            <details class="mkdocstrings-source">
+              <summary>Source code in <code>src/catagg/financial/structures.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">37</span>
+<span class="normal">38</span>
+<span class="normal">39</span>
+<span class="normal">40</span>
+<span class="normal">41</span>
+<span class="normal">42</span>
+<span class="normal">43</span>
+<span class="normal">44</span>
+<span class="normal">45</span>
+<span class="normal">46</span>
+<span class="normal">47</span>
+<span class="normal">48</span>
+<span class="normal">49</span>
+<span class="normal">50</span>
+<span class="normal">51</span>
+<span class="normal">52</span>
+<span class="normal">53</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">cede</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">retained</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">],</span> <span class="n">years</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">"""Return the amount ceded on each occurrence.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    retained</span>
+<span class="sd">        Loss still retained on each occurrence before this structure.</span>
+<span class="sd">    years</span>
+<span class="sd">        Simulated year of each occurrence. Occurrences are sorted by year</span>
+<span class="sd">        and chronologically within it.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    numpy.ndarray</span>
+<span class="sd">        Amount ceded, between zero and ``retained``, on each occurrence.</span>
+<span class="sd">    """</span>
+    <span class="o">...</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h3 id="catagg.financial.structures.QuotaShare" class="doc doc-heading">
+            <span class="doc doc-object-name doc-class-name">QuotaShare</span>
+
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-dataclass"><code>dataclass</code></small>
+  </span>
+
+<a href="#catagg.financial.structures.QuotaShare" class="headerlink" title="Permanent link">&para;</a></h3>
+
+
+    <div class="doc doc-contents ">
+
+
+
+        <p>Cede a fixed share of every occurrence.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>cession</code>
+            </td>
+            <td>
+                  <code><span title="float">float</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Share ceded, between 0 and 1.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+<p><span class="doc-section-title">Examples:</span></p>
+    <div class="highlight"><pre><span></span><code><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">qs</span> <span class="o">=</span> <span class="n">QuotaShare</span><span class="p">(</span><span class="n">cession</span><span class="o">=</span><span class="mf">0.25</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">qs</span><span class="o">.</span><span class="n">cede</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">100.0</span><span class="p">,</span> <span class="mf">40.0</span><span class="p">]),</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">))</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+<span class="go">[25.0, 10.0]</span>
+</code></pre></div>
+
+
+
+
+
+
+
+
+              <details class="mkdocstrings-source">
+                <summary>Source code in <code>src/catagg/financial/structures.py</code></summary>
+                <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 66</span>
+<span class="normal"> 67</span>
+<span class="normal"> 68</span>
+<span class="normal"> 69</span>
+<span class="normal"> 70</span>
+<span class="normal"> 71</span>
+<span class="normal"> 72</span>
+<span class="normal"> 73</span>
+<span class="normal"> 74</span>
+<span class="normal"> 75</span>
+<span class="normal"> 76</span>
+<span class="normal"> 77</span>
+<span class="normal"> 78</span>
+<span class="normal"> 79</span>
+<span class="normal"> 80</span>
+<span class="normal"> 81</span>
+<span class="normal"> 82</span>
+<span class="normal"> 83</span>
+<span class="normal"> 84</span>
+<span class="normal"> 85</span>
+<span class="normal"> 86</span>
+<span class="normal"> 87</span>
+<span class="normal"> 88</span>
+<span class="normal"> 89</span>
+<span class="normal"> 90</span>
+<span class="normal"> 91</span>
+<span class="normal"> 92</span>
+<span class="normal"> 93</span>
+<span class="normal"> 94</span>
+<span class="normal"> 95</span>
+<span class="normal"> 96</span>
+<span class="normal"> 97</span>
+<span class="normal"> 98</span>
+<span class="normal"> 99</span>
+<span class="normal">100</span>
+<span class="normal">101</span>
+<span class="normal">102</span>
+<span class="normal">103</span>
+<span class="normal">104</span>
+<span class="normal">105</span>
+<span class="normal">106</span>
+<span class="normal">107</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">kw_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">QuotaShare</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Cede a fixed share of every occurrence.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    cession</span>
+<span class="sd">        Share ceded, between 0 and 1.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; import numpy as np</span>
+<span class="sd">    &gt;&gt;&gt; qs = QuotaShare(cession=0.25)</span>
+<span class="sd">    &gt;&gt;&gt; qs.cede(np.array([100.0, 40.0]), np.zeros(2, dtype=np.int64)).tolist()</span>
+<span class="sd">    [25.0, 10.0]</span>
+<span class="sd">    """</span>
+
+    <span class="n">cession</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="n">label</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s2">"quota_share"</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">__post_init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="mf">0.0</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cession</span> <span class="o">&lt;=</span> <span class="mf">1.0</span><span class="p">:</span>  <span class="c1"># also rejects NaN</span>
+            <span class="k">raise</span> <span class="n">CataggError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"cession must lie in [0, 1], got </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">cession</span><span class="si">!r}</span><span class="s2">."</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">cede</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">retained</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">],</span> <span class="n">years</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">"""Cede ``cession`` times each occurrence's retained loss.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        retained</span>
+<span class="sd">            Loss still retained on each occurrence before this structure.</span>
+<span class="sd">        years</span>
+<span class="sd">            Simulated year of each occurrence; unused, since a quota share has</span>
+<span class="sd">            no running total.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        numpy.ndarray</span>
+<span class="sd">            Amount ceded on each occurrence.</span>
+<span class="sd">        """</span>
+        <span class="n">ceded</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cession</span> <span class="o">*</span> <span class="n">retained</span>
+        <span class="k">return</span> <span class="n">ceded</span>
+</code></pre></div></td></tr></table></div>
+              </details>
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="catagg.financial.structures.QuotaShare.cede" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">cede</span>
+
+
+<a href="#catagg.financial.structures.QuotaShare.cede" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">cede</span><span class="p">(</span><span class="n">retained</span><span class="p">,</span> <span class="n">years</span><span class="p">)</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Cede <code>cession</code> times each occurrence's retained loss.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>retained</code>
+            </td>
+            <td>
+                  <code><span title="numpy.typing.NDArray">NDArray</span>[<span title="numpy.float64">float64</span>]</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Loss still retained on each occurrence before this structure.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>years</code>
+            </td>
+            <td>
+                  <code><span title="numpy.typing.NDArray">NDArray</span>[<span title="numpy.int64">int64</span>]</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Simulated year of each occurrence; unused, since a quota share has
+no running total.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code>ndarray</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Amount ceded on each occurrence.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+            <details class="mkdocstrings-source">
+              <summary>Source code in <code>src/catagg/financial/structures.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 90</span>
+<span class="normal"> 91</span>
+<span class="normal"> 92</span>
+<span class="normal"> 93</span>
+<span class="normal"> 94</span>
+<span class="normal"> 95</span>
+<span class="normal"> 96</span>
+<span class="normal"> 97</span>
+<span class="normal"> 98</span>
+<span class="normal"> 99</span>
+<span class="normal">100</span>
+<span class="normal">101</span>
+<span class="normal">102</span>
+<span class="normal">103</span>
+<span class="normal">104</span>
+<span class="normal">105</span>
+<span class="normal">106</span>
+<span class="normal">107</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">cede</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">retained</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">],</span> <span class="n">years</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">"""Cede ``cession`` times each occurrence's retained loss.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    retained</span>
+<span class="sd">        Loss still retained on each occurrence before this structure.</span>
+<span class="sd">    years</span>
+<span class="sd">        Simulated year of each occurrence; unused, since a quota share has</span>
+<span class="sd">        no running total.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    numpy.ndarray</span>
+<span class="sd">        Amount ceded on each occurrence.</span>
+<span class="sd">    """</span>
+    <span class="n">ceded</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cession</span> <span class="o">*</span> <span class="n">retained</span>
+    <span class="k">return</span> <span class="n">ceded</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h3 id="catagg.financial.structures.ExcessOfLoss" class="doc doc-heading">
+            <span class="doc doc-object-name doc-class-name">ExcessOfLoss</span>
+
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-dataclass"><code>dataclass</code></small>
+  </span>
+
+<a href="#catagg.financial.structures.ExcessOfLoss" class="headerlink" title="Permanent link">&para;</a></h3>
+
+
+    <div class="doc doc-contents ">
+
+
+
+        <p>Per-occurrence excess of loss, with a limited number of reinstatements.</p>
+<p>On each occurrence the layer pays the retained loss above <code>attachment</code>,
+up to <code>limit</code>. Every payment uses up cover, which is reinstated up to
+<code>reinstatements</code> times, so the most the layer pays in a year is
+<code>limit * (1 + reinstatements)</code>. Cover is consumed in chronological order:
+once the year's cover is gone, later occurrences recover nothing.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>attachment</code>
+            </td>
+            <td>
+                  <code><span title="float">float</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Retention per occurrence.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>limit</code>
+            </td>
+            <td>
+                  <code><span title="float">float</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Most the layer pays on one occurrence.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>reinstatements</code>
+            </td>
+            <td>
+                  <code><span title="int">int</span> | None</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Number of times the limit is reinstated in a year, or <code>None</code> for
+unlimited reinstatement. Required: market terms vary too widely for any
+default to be safe.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+<details class="note" open>
+  <summary>Notes</summary>
+  <p>The order of occurrences changes which one is cut off when the annual cap
+binds, and so the net loss per occurrence and the net OEP. It never changes
+the layer's annual total, which is
+<code>min(sum of per-occurrence layer losses, limit * (1 + reinstatements))</code>.</p>
+<p>Reinstatement premium is not modelled in this version.</p>
+</details>
+
+<p><span class="doc-section-title">Examples:</span></p>
+    <p>A 50 xs 50 layer with two reinstatements pays at most 150 a year. Of four
+layer losses of 30, 50, 50 and 40, the last recovers only the 20 left:</p>
+    <div class="highlight"><pre><span></span><code><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">layer</span> <span class="o">=</span> <span class="n">ExcessOfLoss</span><span class="p">(</span><span class="n">attachment</span><span class="o">=</span><span class="mf">50.0</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="mf">50.0</span><span class="p">,</span> <span class="n">reinstatements</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">layer</span><span class="o">.</span><span class="n">cede</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">80.0</span><span class="p">,</span> <span class="mf">120.0</span><span class="p">,</span> <span class="mf">200.0</span><span class="p">,</span> <span class="mf">90.0</span><span class="p">]),</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">))</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+<span class="go">[30.0, 50.0, 50.0, 20.0]</span>
+</code></pre></div>
+
+
+
+
+
+
+
+
+              <details class="mkdocstrings-source">
+                <summary>Source code in <code>src/catagg/financial/structures.py</code></summary>
+                <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">110</span>
+<span class="normal">111</span>
+<span class="normal">112</span>
+<span class="normal">113</span>
+<span class="normal">114</span>
+<span class="normal">115</span>
+<span class="normal">116</span>
+<span class="normal">117</span>
+<span class="normal">118</span>
+<span class="normal">119</span>
+<span class="normal">120</span>
+<span class="normal">121</span>
+<span class="normal">122</span>
+<span class="normal">123</span>
+<span class="normal">124</span>
+<span class="normal">125</span>
+<span class="normal">126</span>
+<span class="normal">127</span>
+<span class="normal">128</span>
+<span class="normal">129</span>
+<span class="normal">130</span>
+<span class="normal">131</span>
+<span class="normal">132</span>
+<span class="normal">133</span>
+<span class="normal">134</span>
+<span class="normal">135</span>
+<span class="normal">136</span>
+<span class="normal">137</span>
+<span class="normal">138</span>
+<span class="normal">139</span>
+<span class="normal">140</span>
+<span class="normal">141</span>
+<span class="normal">142</span>
+<span class="normal">143</span>
+<span class="normal">144</span>
+<span class="normal">145</span>
+<span class="normal">146</span>
+<span class="normal">147</span>
+<span class="normal">148</span>
+<span class="normal">149</span>
+<span class="normal">150</span>
+<span class="normal">151</span>
+<span class="normal">152</span>
+<span class="normal">153</span>
+<span class="normal">154</span>
+<span class="normal">155</span>
+<span class="normal">156</span>
+<span class="normal">157</span>
+<span class="normal">158</span>
+<span class="normal">159</span>
+<span class="normal">160</span>
+<span class="normal">161</span>
+<span class="normal">162</span>
+<span class="normal">163</span>
+<span class="normal">164</span>
+<span class="normal">165</span>
+<span class="normal">166</span>
+<span class="normal">167</span>
+<span class="normal">168</span>
+<span class="normal">169</span>
+<span class="normal">170</span>
+<span class="normal">171</span>
+<span class="normal">172</span>
+<span class="normal">173</span>
+<span class="normal">174</span>
+<span class="normal">175</span>
+<span class="normal">176</span>
+<span class="normal">177</span>
+<span class="normal">178</span>
+<span class="normal">179</span>
+<span class="normal">180</span>
+<span class="normal">181</span>
+<span class="normal">182</span>
+<span class="normal">183</span>
+<span class="normal">184</span>
+<span class="normal">185</span>
+<span class="normal">186</span>
+<span class="normal">187</span>
+<span class="normal">188</span>
+<span class="normal">189</span>
+<span class="normal">190</span>
+<span class="normal">191</span>
+<span class="normal">192</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">kw_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">ExcessOfLoss</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Per-occurrence excess of loss, with a limited number of reinstatements.</span>
+
+<span class="sd">    On each occurrence the layer pays the retained loss above ``attachment``,</span>
+<span class="sd">    up to ``limit``. Every payment uses up cover, which is reinstated up to</span>
+<span class="sd">    ``reinstatements`` times, so the most the layer pays in a year is</span>
+<span class="sd">    ``limit * (1 + reinstatements)``. Cover is consumed in chronological order:</span>
+<span class="sd">    once the year's cover is gone, later occurrences recover nothing.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    attachment</span>
+<span class="sd">        Retention per occurrence.</span>
+<span class="sd">    limit</span>
+<span class="sd">        Most the layer pays on one occurrence.</span>
+<span class="sd">    reinstatements</span>
+<span class="sd">        Number of times the limit is reinstated in a year, or ``None`` for</span>
+<span class="sd">        unlimited reinstatement. Required: market terms vary too widely for any</span>
+<span class="sd">        default to be safe.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    The order of occurrences changes which one is cut off when the annual cap</span>
+<span class="sd">    binds, and so the net loss per occurrence and the net OEP. It never changes</span>
+<span class="sd">    the layer's annual total, which is</span>
+<span class="sd">    ``min(sum of per-occurrence layer losses, limit * (1 + reinstatements))``.</span>
+
+<span class="sd">    Reinstatement premium is not modelled in this version.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    A 50 xs 50 layer with two reinstatements pays at most 150 a year. Of four</span>
+<span class="sd">    layer losses of 30, 50, 50 and 40, the last recovers only the 20 left:</span>
+
+<span class="sd">    &gt;&gt;&gt; import numpy as np</span>
+<span class="sd">    &gt;&gt;&gt; layer = ExcessOfLoss(attachment=50.0, limit=50.0, reinstatements=2)</span>
+<span class="sd">    &gt;&gt;&gt; layer.cede(np.array([80.0, 120.0, 200.0, 90.0]), np.zeros(4, dtype=np.int64)).tolist()</span>
+<span class="sd">    [30.0, 50.0, 50.0, 20.0]</span>
+<span class="sd">    """</span>
+
+    <span class="n">attachment</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="n">limit</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="n">reinstatements</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span>
+    <span class="n">label</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s2">"excess_of_loss"</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">__post_init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">_require_finite_non_negative</span><span class="p">(</span><span class="s2">"attachment"</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">attachment</span><span class="p">)</span>
+        <span class="n">_require_positive</span><span class="p">(</span><span class="s2">"limit"</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">limit</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">reinstatements</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="ow">not</span> <span class="p">(</span>
+            <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">reinstatements</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span>
+            <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">reinstatements</span><span class="p">,</span> <span class="nb">bool</span><span class="p">)</span>
+            <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">reinstatements</span> <span class="o">&gt;=</span> <span class="mi">0</span>
+        <span class="p">):</span>
+            <span class="k">raise</span> <span class="n">CataggError</span><span class="p">(</span>
+                <span class="s2">"reinstatements must be a non-negative integer or None, "</span>
+                <span class="sa">f</span><span class="s2">"got </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">reinstatements</span><span class="si">!r}</span><span class="s2">."</span>
+            <span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">annual_limit</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Most the layer can pay in one year, ``limit * (1 + reinstatements)``."""</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">reinstatements</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">math</span><span class="o">.</span><span class="n">inf</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">limit</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">reinstatements</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">cede</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">retained</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">],</span> <span class="n">years</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">"""Cede the layer loss on each occurrence, until the year's cover runs out.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        retained</span>
+<span class="sd">            Loss still retained on each occurrence before this structure.</span>
+<span class="sd">        years</span>
+<span class="sd">            Simulated year of each occurrence, sorted, chronological within year.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        numpy.ndarray</span>
+<span class="sd">            Amount ceded on each occurrence.</span>
+<span class="sd">        """</span>
+        <span class="n">layer_loss</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">retained</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">attachment</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">limit</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">cap_within_years</span><span class="p">(</span><span class="n">layer_loss</span><span class="p">,</span> <span class="n">years</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">annual_limit</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+              </details>
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h4 id="catagg.financial.structures.ExcessOfLoss.annual_limit" class="doc doc-heading">
+            <span class="doc doc-object-name doc-attribute-name">annual_limit</span>
+
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-property"><code>property</code></small>
+  </span>
+
+<a href="#catagg.financial.structures.ExcessOfLoss.annual_limit" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="n">annual_limit</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Most the layer can pay in one year, <code>limit * (1 + reinstatements)</code>.</p>
+
+    </div>
+
+</div>
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="catagg.financial.structures.ExcessOfLoss.cede" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">cede</span>
+
+
+<a href="#catagg.financial.structures.ExcessOfLoss.cede" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">cede</span><span class="p">(</span><span class="n">retained</span><span class="p">,</span> <span class="n">years</span><span class="p">)</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Cede the layer loss on each occurrence, until the year's cover runs out.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>retained</code>
+            </td>
+            <td>
+                  <code><span title="numpy.typing.NDArray">NDArray</span>[<span title="numpy.float64">float64</span>]</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Loss still retained on each occurrence before this structure.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>years</code>
+            </td>
+            <td>
+                  <code><span title="numpy.typing.NDArray">NDArray</span>[<span title="numpy.int64">int64</span>]</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Simulated year of each occurrence, sorted, chronological within year.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code>ndarray</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Amount ceded on each occurrence.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+            <details class="mkdocstrings-source">
+              <summary>Source code in <code>src/catagg/financial/structures.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">176</span>
+<span class="normal">177</span>
+<span class="normal">178</span>
+<span class="normal">179</span>
+<span class="normal">180</span>
+<span class="normal">181</span>
+<span class="normal">182</span>
+<span class="normal">183</span>
+<span class="normal">184</span>
+<span class="normal">185</span>
+<span class="normal">186</span>
+<span class="normal">187</span>
+<span class="normal">188</span>
+<span class="normal">189</span>
+<span class="normal">190</span>
+<span class="normal">191</span>
+<span class="normal">192</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">cede</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">retained</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">],</span> <span class="n">years</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">"""Cede the layer loss on each occurrence, until the year's cover runs out.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    retained</span>
+<span class="sd">        Loss still retained on each occurrence before this structure.</span>
+<span class="sd">    years</span>
+<span class="sd">        Simulated year of each occurrence, sorted, chronological within year.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    numpy.ndarray</span>
+<span class="sd">        Amount ceded on each occurrence.</span>
+<span class="sd">    """</span>
+    <span class="n">layer_loss</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">retained</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">attachment</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">limit</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">cap_within_years</span><span class="p">(</span><span class="n">layer_loss</span><span class="p">,</span> <span class="n">years</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">annual_limit</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h3 id="catagg.financial.structures.AggregateStopLoss" class="doc doc-heading">
+            <span class="doc doc-object-name doc-class-name">AggregateStopLoss</span>
+
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-dataclass"><code>dataclass</code></small>
+  </span>
+
+<a href="#catagg.financial.structures.AggregateStopLoss" class="headerlink" title="Permanent link">&para;</a></h3>
+
+
+    <div class="doc doc-contents ">
+
+
+
+        <p>Aggregate cover on each year's retained loss.</p>
+<p>The cover pays the part of the year's retained loss above <code>attachment</code>,
+up to <code>limit</code>. Attachment and limit are amounts of money, so this is also
+an aggregate excess of loss; a stop-loss quoted as a loss ratio converts to
+one given the subject premium.</p>
+<p>The annual recovery is allocated to occurrences in chronological order: the
+cover attaches part-way through the occurrence that takes the running total
+past <code>attachment</code>, and stops paying on the one that exhausts <code>limit</code>.
+That allocation is what makes a net OEP after an aggregate cover
+well-defined.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>attachment</code>
+            </td>
+            <td>
+                  <code><span title="float">float</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Annual aggregate retention.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>limit</code>
+            </td>
+            <td>
+                  <code><span title="float">float</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Most the cover pays in a year; may be <code>inf</code>.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+<p><span class="doc-section-title">Examples:</span></p>
+    <p>Retained losses of 60, 70 and 90 build to 220. A 100 xs 100 cover attaches
+30 into the second occurrence and is exhausted within the third:</p>
+    <div class="highlight"><pre><span></span><code><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cover</span> <span class="o">=</span> <span class="n">AggregateStopLoss</span><span class="p">(</span><span class="n">attachment</span><span class="o">=</span><span class="mf">100.0</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="mf">100.0</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cover</span><span class="o">.</span><span class="n">cede</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">60.0</span><span class="p">,</span> <span class="mf">70.0</span><span class="p">,</span> <span class="mf">90.0</span><span class="p">]),</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">))</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+<span class="go">[0.0, 30.0, 70.0]</span>
+</code></pre></div>
+
+
+
+
+
+
+
+
+              <details class="mkdocstrings-source">
+                <summary>Source code in <code>src/catagg/financial/structures.py</code></summary>
+                <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">195</span>
+<span class="normal">196</span>
+<span class="normal">197</span>
+<span class="normal">198</span>
+<span class="normal">199</span>
+<span class="normal">200</span>
+<span class="normal">201</span>
+<span class="normal">202</span>
+<span class="normal">203</span>
+<span class="normal">204</span>
+<span class="normal">205</span>
+<span class="normal">206</span>
+<span class="normal">207</span>
+<span class="normal">208</span>
+<span class="normal">209</span>
+<span class="normal">210</span>
+<span class="normal">211</span>
+<span class="normal">212</span>
+<span class="normal">213</span>
+<span class="normal">214</span>
+<span class="normal">215</span>
+<span class="normal">216</span>
+<span class="normal">217</span>
+<span class="normal">218</span>
+<span class="normal">219</span>
+<span class="normal">220</span>
+<span class="normal">221</span>
+<span class="normal">222</span>
+<span class="normal">223</span>
+<span class="normal">224</span>
+<span class="normal">225</span>
+<span class="normal">226</span>
+<span class="normal">227</span>
+<span class="normal">228</span>
+<span class="normal">229</span>
+<span class="normal">230</span>
+<span class="normal">231</span>
+<span class="normal">232</span>
+<span class="normal">233</span>
+<span class="normal">234</span>
+<span class="normal">235</span>
+<span class="normal">236</span>
+<span class="normal">237</span>
+<span class="normal">238</span>
+<span class="normal">239</span>
+<span class="normal">240</span>
+<span class="normal">241</span>
+<span class="normal">242</span>
+<span class="normal">243</span>
+<span class="normal">244</span>
+<span class="normal">245</span>
+<span class="normal">246</span>
+<span class="normal">247</span>
+<span class="normal">248</span>
+<span class="normal">249</span>
+<span class="normal">250</span>
+<span class="normal">251</span>
+<span class="normal">252</span>
+<span class="normal">253</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">kw_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">AggregateStopLoss</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Aggregate cover on each year's retained loss.</span>
+
+<span class="sd">    The cover pays the part of the year's retained loss above ``attachment``,</span>
+<span class="sd">    up to ``limit``. Attachment and limit are amounts of money, so this is also</span>
+<span class="sd">    an aggregate excess of loss; a stop-loss quoted as a loss ratio converts to</span>
+<span class="sd">    one given the subject premium.</span>
+
+<span class="sd">    The annual recovery is allocated to occurrences in chronological order: the</span>
+<span class="sd">    cover attaches part-way through the occurrence that takes the running total</span>
+<span class="sd">    past ``attachment``, and stops paying on the one that exhausts ``limit``.</span>
+<span class="sd">    That allocation is what makes a net OEP after an aggregate cover</span>
+<span class="sd">    well-defined.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    attachment</span>
+<span class="sd">        Annual aggregate retention.</span>
+<span class="sd">    limit</span>
+<span class="sd">        Most the cover pays in a year; may be ``inf``.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    Retained losses of 60, 70 and 90 build to 220. A 100 xs 100 cover attaches</span>
+<span class="sd">    30 into the second occurrence and is exhausted within the third:</span>
+
+<span class="sd">    &gt;&gt;&gt; import numpy as np</span>
+<span class="sd">    &gt;&gt;&gt; cover = AggregateStopLoss(attachment=100.0, limit=100.0)</span>
+<span class="sd">    &gt;&gt;&gt; cover.cede(np.array([60.0, 70.0, 90.0]), np.zeros(3, dtype=np.int64)).tolist()</span>
+<span class="sd">    [0.0, 30.0, 70.0]</span>
+<span class="sd">    """</span>
+
+    <span class="n">attachment</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="n">limit</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="n">label</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s2">"aggregate_stop_loss"</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">__post_init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">_require_finite_non_negative</span><span class="p">(</span><span class="s2">"attachment"</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">attachment</span><span class="p">)</span>
+        <span class="n">_require_positive</span><span class="p">(</span><span class="s2">"limit"</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">limit</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">cede</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">retained</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">],</span> <span class="n">years</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">"""Cede each occurrence's share of the year's aggregate recovery.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        retained</span>
+<span class="sd">            Loss still retained on each occurrence before this structure.</span>
+<span class="sd">        years</span>
+<span class="sd">            Simulated year of each occurrence, sorted, chronological within year.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        numpy.ndarray</span>
+<span class="sd">            Amount ceded on each occurrence.</span>
+<span class="sd">        """</span>
+        <span class="n">deductible_left</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">attachment</span> <span class="o">-</span> <span class="n">cumulative_before</span><span class="p">(</span><span class="n">retained</span><span class="p">,</span> <span class="n">years</span><span class="p">),</span> <span class="mf">0.0</span><span class="p">)</span>
+        <span class="n">above_attachment</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="n">retained</span> <span class="o">-</span> <span class="n">deductible_left</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">cap_within_years</span><span class="p">(</span><span class="n">above_attachment</span><span class="p">,</span> <span class="n">years</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">limit</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+              </details>
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="catagg.financial.structures.AggregateStopLoss.cede" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">cede</span>
+
+
+<a href="#catagg.financial.structures.AggregateStopLoss.cede" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">cede</span><span class="p">(</span><span class="n">retained</span><span class="p">,</span> <span class="n">years</span><span class="p">)</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Cede each occurrence's share of the year's aggregate recovery.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>retained</code>
+            </td>
+            <td>
+                  <code><span title="numpy.typing.NDArray">NDArray</span>[<span title="numpy.float64">float64</span>]</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Loss still retained on each occurrence before this structure.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>years</code>
+            </td>
+            <td>
+                  <code><span title="numpy.typing.NDArray">NDArray</span>[<span title="numpy.int64">int64</span>]</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Simulated year of each occurrence, sorted, chronological within year.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code>ndarray</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Amount ceded on each occurrence.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+            <details class="mkdocstrings-source">
+              <summary>Source code in <code>src/catagg/financial/structures.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">236</span>
+<span class="normal">237</span>
+<span class="normal">238</span>
+<span class="normal">239</span>
+<span class="normal">240</span>
+<span class="normal">241</span>
+<span class="normal">242</span>
+<span class="normal">243</span>
+<span class="normal">244</span>
+<span class="normal">245</span>
+<span class="normal">246</span>
+<span class="normal">247</span>
+<span class="normal">248</span>
+<span class="normal">249</span>
+<span class="normal">250</span>
+<span class="normal">251</span>
+<span class="normal">252</span>
+<span class="normal">253</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">cede</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">retained</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">],</span> <span class="n">years</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">"""Cede each occurrence's share of the year's aggregate recovery.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    retained</span>
+<span class="sd">        Loss still retained on each occurrence before this structure.</span>
+<span class="sd">    years</span>
+<span class="sd">        Simulated year of each occurrence, sorted, chronological within year.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    numpy.ndarray</span>
+<span class="sd">        Amount ceded on each occurrence.</span>
+<span class="sd">    """</span>
+    <span class="n">deductible_left</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">attachment</span> <span class="o">-</span> <span class="n">cumulative_before</span><span class="p">(</span><span class="n">retained</span><span class="p">,</span> <span class="n">years</span><span class="p">),</span> <span class="mf">0.0</span><span class="p">)</span>
+    <span class="n">above_attachment</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="n">retained</span> <span class="o">-</span> <span class="n">deductible_left</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">cap_within_years</span><span class="p">(</span><span class="n">above_attachment</span><span class="p">,</span> <span class="n">years</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">limit</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-module">
+
+
+
+<h2 id="catagg.financial.programme" class="doc doc-heading">
+            <span class="doc doc-object-name doc-module-name">catagg.financial.programme</span>
+
+
+<a href="#catagg.financial.programme" class="headerlink" title="Permanent link">&para;</a></h2>
+
+    <div class="doc doc-contents first">
+
+        <p>A reinsurance programme: structures applied in order to a YELT.</p>
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-class">
+
+
+
+<h3 id="catagg.financial.programme.ProgrammeResult" class="doc doc-heading">
+            <span class="doc doc-object-name doc-class-name">ProgrammeResult</span>
+
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-dataclass"><code>dataclass</code></small>
+  </span>
+
+<a href="#catagg.financial.programme.ProgrammeResult" class="headerlink" title="Permanent link">&para;</a></h3>
+
+
+    <div class="doc doc-contents ">
+
+
+
+        <p>Gross, ceded and net loss on every simulated occurrence.</p>
+
+
+<p><span class="doc-section-title">Attributes:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td><code><span title="catagg.financial.programme.ProgrammeResult.yelt">yelt</span></code></td>
+            <td>
+                  <code><span title="pandas.DataFrame">DataFrame</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>A YELT with columns <code>sim_year</code>, <code>event_id</code>, <code>occurrence_index</code>,
+<code>gross_loss</code>, <code>ceded_loss</code> and <code>net_loss</code>, sorted by year and then
+chronologically, with <code>attrs["n_years"]</code> set. Pass it to <code>ep_curve</code> or
+<code>to_ylt</code> with <code>column="net_loss"</code> or <code>column="ceded_loss"</code>.</p>
+              </div>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td><code><span title="catagg.financial.programme.ProgrammeResult.ceded_by_structure">ceded_by_structure</span></code></td>
+            <td>
+                  <code><span title="pandas.DataFrame">DataFrame</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Amount ceded to each structure on each occurrence, aligned with
+<code>yelt</code>. Columns are labelled <code>"&lt;position&gt;_&lt;label&gt;"</code> in programme
+order, counting from 1.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+
+
+
+
+
+
+              <details class="mkdocstrings-source">
+                <summary>Source code in <code>src/catagg/financial/programme.py</code></summary>
+                <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">21</span>
+<span class="normal">22</span>
+<span class="normal">23</span>
+<span class="normal">24</span>
+<span class="normal">25</span>
+<span class="normal">26</span>
+<span class="normal">27</span>
+<span class="normal">28</span>
+<span class="normal">29</span>
+<span class="normal">30</span>
+<span class="normal">31</span>
+<span class="normal">32</span>
+<span class="normal">33</span>
+<span class="normal">34</span>
+<span class="normal">35</span>
+<span class="normal">36</span>
+<span class="normal">37</span>
+<span class="normal">38</span>
+<span class="normal">39</span>
+<span class="normal">40</span>
+<span class="normal">41</span>
+<span class="normal">42</span>
+<span class="normal">43</span>
+<span class="normal">44</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">ProgrammeResult</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Gross, ceded and net loss on every simulated occurrence.</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    yelt</span>
+<span class="sd">        A YELT with columns ``sim_year``, ``event_id``, ``occurrence_index``,</span>
+<span class="sd">        ``gross_loss``, ``ceded_loss`` and ``net_loss``, sorted by year and then</span>
+<span class="sd">        chronologically, with ``attrs["n_years"]`` set. Pass it to `ep_curve` or</span>
+<span class="sd">        `to_ylt` with ``column="net_loss"`` or ``column="ceded_loss"``.</span>
+<span class="sd">    ceded_by_structure</span>
+<span class="sd">        Amount ceded to each structure on each occurrence, aligned with</span>
+<span class="sd">        ``yelt``. Columns are labelled ``"&lt;position&gt;_&lt;label&gt;"`` in programme</span>
+<span class="sd">        order, counting from 1.</span>
+<span class="sd">    """</span>
+
+    <span class="n">yelt</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span>
+    <span class="n">ceded_by_structure</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">n_years</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Number of simulated years, including years with no occurrences."""</span>
+        <span class="k">return</span> <span class="n">n_years_of</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">yelt</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+              </details>
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h4 id="catagg.financial.programme.ProgrammeResult.n_years" class="doc doc-heading">
+            <span class="doc doc-object-name doc-attribute-name">n_years</span>
+
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-property"><code>property</code></small>
+  </span>
+
+<a href="#catagg.financial.programme.ProgrammeResult.n_years" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="n">n_years</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Number of simulated years, including years with no occurrences.</p>
+
+    </div>
+
+</div>
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h3 id="catagg.financial.programme.Programme" class="doc doc-heading">
+            <span class="doc doc-object-name doc-class-name">Programme</span>
+
+
+<a href="#catagg.financial.programme.Programme" class="headerlink" title="Permanent link">&para;</a></h3>
+
+
+    <div class="doc doc-contents ">
+
+
+
+        <p>Reinsurance structures applied in order.</p>
+<p>Each structure protects what the structures before it left retained, so a
+quota share listed first cedes a share of the gross loss and an excess of
+loss listed after it sees only the retained share. Order therefore matters,
+and it is the order given here.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>structures</code>
+            </td>
+            <td>
+                  <code><span title="collections.abc.Sequence">Sequence</span>[<a class="autorefs autorefs-internal" title="Structure (catagg.financial.structures.Structure)" href="#catagg.financial.structures.Structure">Structure</a>]</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The structures, in the order they apply. Any object satisfying the
+<code>Structure</code> protocol is accepted.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+<p><span class="doc-section-title">Examples:</span></p>
+    <div class="highlight"><pre><span></span><code><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">catagg</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">ca</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">elt</span> <span class="o">=</span> <span class="n">ca</span><span class="o">.</span><span class="n">swiss_multiperil_elt</span><span class="p">(</span><span class="n">n_events</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">yelt</span> <span class="o">=</span> <span class="n">ca</span><span class="o">.</span><span class="n">simulate</span><span class="p">(</span><span class="n">elt</span><span class="p">,</span> <span class="n">n_years</span><span class="o">=</span><span class="mi">1_000</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">programme</span> <span class="o">=</span> <span class="n">ca</span><span class="o">.</span><span class="n">Programme</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="p">[</span>
+<span class="gp">... </span>        <span class="n">ca</span><span class="o">.</span><span class="n">QuotaShare</span><span class="p">(</span><span class="n">cession</span><span class="o">=</span><span class="mf">0.2</span><span class="p">),</span>
+<span class="gp">... </span>        <span class="n">ca</span><span class="o">.</span><span class="n">ExcessOfLoss</span><span class="p">(</span><span class="n">attachment</span><span class="o">=</span><span class="mf">50e6</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="mf">50e6</span><span class="p">,</span> <span class="n">reinstatements</span><span class="o">=</span><span class="mi">2</span><span class="p">),</span>
+<span class="gp">... </span>        <span class="n">ca</span><span class="o">.</span><span class="n">AggregateStopLoss</span><span class="p">(</span><span class="n">attachment</span><span class="o">=</span><span class="mf">100e6</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="mf">100e6</span><span class="p">),</span>
+<span class="gp">... </span>    <span class="p">]</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="n">programme</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">yelt</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">list</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">yelt</span><span class="o">.</span><span class="n">columns</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">:])</span>
+<span class="go">['ceded_loss', 'net_loss']</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">net</span> <span class="o">=</span> <span class="n">ca</span><span class="o">.</span><span class="n">ep_curve</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">yelt</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="s2">"OEP"</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="s2">"net_loss"</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">net</span><span class="o">.</span><span class="n">n_years</span>
+<span class="go">1000</span>
+</code></pre></div>
+
+
+
+
+
+
+
+
+              <details class="mkdocstrings-source">
+                <summary>Source code in <code>src/catagg/financial/programme.py</code></summary>
+                <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 47</span>
+<span class="normal"> 48</span>
+<span class="normal"> 49</span>
+<span class="normal"> 50</span>
+<span class="normal"> 51</span>
+<span class="normal"> 52</span>
+<span class="normal"> 53</span>
+<span class="normal"> 54</span>
+<span class="normal"> 55</span>
+<span class="normal"> 56</span>
+<span class="normal"> 57</span>
+<span class="normal"> 58</span>
+<span class="normal"> 59</span>
+<span class="normal"> 60</span>
+<span class="normal"> 61</span>
+<span class="normal"> 62</span>
+<span class="normal"> 63</span>
+<span class="normal"> 64</span>
+<span class="normal"> 65</span>
+<span class="normal"> 66</span>
+<span class="normal"> 67</span>
+<span class="normal"> 68</span>
+<span class="normal"> 69</span>
+<span class="normal"> 70</span>
+<span class="normal"> 71</span>
+<span class="normal"> 72</span>
+<span class="normal"> 73</span>
+<span class="normal"> 74</span>
+<span class="normal"> 75</span>
+<span class="normal"> 76</span>
+<span class="normal"> 77</span>
+<span class="normal"> 78</span>
+<span class="normal"> 79</span>
+<span class="normal"> 80</span>
+<span class="normal"> 81</span>
+<span class="normal"> 82</span>
+<span class="normal"> 83</span>
+<span class="normal"> 84</span>
+<span class="normal"> 85</span>
+<span class="normal"> 86</span>
+<span class="normal"> 87</span>
+<span class="normal"> 88</span>
+<span class="normal"> 89</span>
+<span class="normal"> 90</span>
+<span class="normal"> 91</span>
+<span class="normal"> 92</span>
+<span class="normal"> 93</span>
+<span class="normal"> 94</span>
+<span class="normal"> 95</span>
+<span class="normal"> 96</span>
+<span class="normal"> 97</span>
+<span class="normal"> 98</span>
+<span class="normal"> 99</span>
+<span class="normal">100</span>
+<span class="normal">101</span>
+<span class="normal">102</span>
+<span class="normal">103</span>
+<span class="normal">104</span>
+<span class="normal">105</span>
+<span class="normal">106</span>
+<span class="normal">107</span>
+<span class="normal">108</span>
+<span class="normal">109</span>
+<span class="normal">110</span>
+<span class="normal">111</span>
+<span class="normal">112</span>
+<span class="normal">113</span>
+<span class="normal">114</span>
+<span class="normal">115</span>
+<span class="normal">116</span>
+<span class="normal">117</span>
+<span class="normal">118</span>
+<span class="normal">119</span>
+<span class="normal">120</span>
+<span class="normal">121</span>
+<span class="normal">122</span>
+<span class="normal">123</span>
+<span class="normal">124</span>
+<span class="normal">125</span>
+<span class="normal">126</span>
+<span class="normal">127</span>
+<span class="normal">128</span>
+<span class="normal">129</span>
+<span class="normal">130</span>
+<span class="normal">131</span>
+<span class="normal">132</span>
+<span class="normal">133</span>
+<span class="normal">134</span>
+<span class="normal">135</span>
+<span class="normal">136</span>
+<span class="normal">137</span>
+<span class="normal">138</span>
+<span class="normal">139</span>
+<span class="normal">140</span>
+<span class="normal">141</span>
+<span class="normal">142</span>
+<span class="normal">143</span>
+<span class="normal">144</span>
+<span class="normal">145</span>
+<span class="normal">146</span>
+<span class="normal">147</span>
+<span class="normal">148</span>
+<span class="normal">149</span>
+<span class="normal">150</span>
+<span class="normal">151</span>
+<span class="normal">152</span>
+<span class="normal">153</span>
+<span class="normal">154</span>
+<span class="normal">155</span>
+<span class="normal">156</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">Programme</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Reinsurance structures applied in order.</span>
+
+<span class="sd">    Each structure protects what the structures before it left retained, so a</span>
+<span class="sd">    quota share listed first cedes a share of the gross loss and an excess of</span>
+<span class="sd">    loss listed after it sees only the retained share. Order therefore matters,</span>
+<span class="sd">    and it is the order given here.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    structures</span>
+<span class="sd">        The structures, in the order they apply. Any object satisfying the</span>
+<span class="sd">        `Structure` protocol is accepted.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; import catagg as ca</span>
+<span class="sd">    &gt;&gt;&gt; elt = ca.swiss_multiperil_elt(n_events=200, seed=0)</span>
+<span class="sd">    &gt;&gt;&gt; yelt = ca.simulate(elt, n_years=1_000, seed=1)</span>
+<span class="sd">    &gt;&gt;&gt; programme = ca.Programme(</span>
+<span class="sd">    ...     [</span>
+<span class="sd">    ...         ca.QuotaShare(cession=0.2),</span>
+<span class="sd">    ...         ca.ExcessOfLoss(attachment=50e6, limit=50e6, reinstatements=2),</span>
+<span class="sd">    ...         ca.AggregateStopLoss(attachment=100e6, limit=100e6),</span>
+<span class="sd">    ...     ]</span>
+<span class="sd">    ... )</span>
+<span class="sd">    &gt;&gt;&gt; result = programme.apply(yelt)</span>
+<span class="sd">    &gt;&gt;&gt; list(result.yelt.columns[-2:])</span>
+<span class="sd">    ['ceded_loss', 'net_loss']</span>
+<span class="sd">    &gt;&gt;&gt; net = ca.ep_curve(result.yelt, kind="OEP", column="net_loss")</span>
+<span class="sd">    &gt;&gt;&gt; net.n_years</span>
+<span class="sd">    1000</span>
+<span class="sd">    """</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">structures</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Structure</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">structure</span> <span class="ow">in</span> <span class="n">structures</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">structure</span><span class="p">,</span> <span class="n">Structure</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="n">CataggError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">structure</span><span class="si">!r}</span><span class="s2"> is not a reinsurance structure: it needs a "</span>
+                    <span class="s2">"label and a cede(retained, years) method."</span>
+                <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_structures</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">structures</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">structures</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">Structure</span><span class="p">,</span> <span class="o">...</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">"""The structures, in the order they apply."""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_structures</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">"Programme(</span><span class="si">{</span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_structures</span><span class="p">)</span><span class="si">!r}</span><span class="s2">)"</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">apply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">yelt</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ProgrammeResult</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Apply the programme to every simulated occurrence.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        yelt</span>
+<span class="sd">            Year event loss table, as returned by `catagg.simulate`. Rows are</span>
+<span class="sd">            put in order of ``(sim_year, occurrence_index)`` before anything is</span>
+<span class="sd">            ceded; the order they arrive in is not relied on.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ProgrammeResult</span>
+<span class="sd">            Gross, ceded and net loss per occurrence, and each structure's</span>
+<span class="sd">            cession.</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        CataggError</span>
+<span class="sd">            If a required column is missing, two rows share a ``sim_year`` and</span>
+<span class="sd">            ``occurrence_index``, the year count is unknown, or a structure</span>
+<span class="sd">            cedes a negative amount or more than it was offered.</span>
+<span class="sd">        """</span>
+        <span class="n">missing</span> <span class="o">=</span> <span class="p">[</span><span class="n">column</span> <span class="k">for</span> <span class="n">column</span> <span class="ow">in</span> <span class="n">_REQUIRED_COLUMNS</span> <span class="k">if</span> <span class="n">column</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">yelt</span><span class="o">.</span><span class="n">columns</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">missing</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">CataggError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"the YELT is missing required columns: </span><span class="si">{</span><span class="n">missing</span><span class="si">}</span><span class="s2">."</span><span class="p">)</span>
+        <span class="n">n_years</span> <span class="o">=</span> <span class="n">n_years_of</span><span class="p">(</span><span class="n">yelt</span><span class="p">)</span>
+
+        <span class="n">ordered</span> <span class="o">=</span> <span class="n">yelt</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="nb">list</span><span class="p">(</span><span class="n">_REQUIRED_COLUMNS</span><span class="p">)]</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span>
+            <span class="p">[</span><span class="s2">"sim_year"</span><span class="p">,</span> <span class="s2">"occurrence_index"</span><span class="p">],</span> <span class="n">kind</span><span class="o">=</span><span class="s2">"stable"</span><span class="p">,</span> <span class="n">ignore_index</span><span class="o">=</span><span class="kc">True</span>
+        <span class="p">)</span>
+        <span class="n">years</span> <span class="o">=</span> <span class="n">ordered</span><span class="p">[</span><span class="s2">"sim_year"</span><span class="p">]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">(</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span>
+        <span class="n">index</span> <span class="o">=</span> <span class="n">ordered</span><span class="p">[</span><span class="s2">"occurrence_index"</span><span class="p">]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">(</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">years</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">((</span><span class="n">years</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">==</span> <span class="n">years</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">index</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">==</span> <span class="n">index</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])):</span>
+            <span class="k">raise</span> <span class="n">CataggError</span><span class="p">(</span>
+                <span class="s2">"two occurrences share a sim_year and occurrence_index, so their "</span>
+                <span class="s2">"order within the year is undefined."</span>
+            <span class="p">)</span>
+
+        <span class="n">gross</span> <span class="o">=</span> <span class="n">ordered</span><span class="p">[</span><span class="s2">"gross_loss"</span><span class="p">]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">(</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+        <span class="n">retained</span> <span class="o">=</span> <span class="n">gross</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">ceded_columns</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">position</span><span class="p">,</span> <span class="n">structure</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_structures</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+            <span class="n">ceded</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">structure</span><span class="o">.</span><span class="n">cede</span><span class="p">(</span><span class="n">retained</span><span class="p">,</span> <span class="n">years</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">ceded</span><span class="o">.</span><span class="n">shape</span> <span class="o">!=</span> <span class="n">retained</span><span class="o">.</span><span class="n">shape</span> <span class="ow">or</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">ceded</span> <span class="o">&lt;</span> <span class="mf">0.0</span><span class="p">)</span> <span class="ow">or</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">ceded</span> <span class="o">&gt;</span> <span class="n">retained</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="n">CataggError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">"structure </span><span class="si">{</span><span class="n">position</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="n">structure</span><span class="o">.</span><span class="n">label</span><span class="si">}</span><span class="s2">) ceded a negative "</span>
+                    <span class="s2">"amount, or more than the loss it was offered."</span>
+                <span class="p">)</span>
+            <span class="n">ceded_columns</span><span class="p">[</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">position</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">structure</span><span class="o">.</span><span class="n">label</span><span class="si">}</span><span class="s2">"</span><span class="p">]</span> <span class="o">=</span> <span class="n">ceded</span>
+            <span class="n">retained</span> <span class="o">=</span> <span class="n">retained</span> <span class="o">-</span> <span class="n">ceded</span>
+
+        <span class="c1"># One subtraction, so net + ceded recovers gross to within one unit in</span>
+        <span class="c1"># the last place on every occurrence - the float form of an identity.</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">ordered</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">ceded_loss</span><span class="o">=</span><span class="n">gross</span> <span class="o">-</span> <span class="n">retained</span><span class="p">,</span> <span class="n">net_loss</span><span class="o">=</span><span class="n">retained</span><span class="p">)</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="nb">list</span><span class="p">(</span><span class="n">_RESULT_COLUMNS</span><span class="p">)]</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">"n_years"</span><span class="p">]</span> <span class="o">=</span> <span class="n">n_years</span>
+        <span class="n">by_structure</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">ceded_columns</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">result</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">ProgrammeResult</span><span class="p">(</span><span class="n">yelt</span><span class="o">=</span><span class="n">result</span><span class="p">,</span> <span class="n">ceded_by_structure</span><span class="o">=</span><span class="n">by_structure</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+              </details>
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h4 id="catagg.financial.programme.Programme.structures" class="doc doc-heading">
+            <span class="doc doc-object-name doc-attribute-name">structures</span>
+
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-property"><code>property</code></small>
+  </span>
+
+<a href="#catagg.financial.programme.Programme.structures" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="n">structures</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>The structures, in the order they apply.</p>
+
+    </div>
+
+</div>
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="catagg.financial.programme.Programme.apply" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">apply</span>
+
+
+<a href="#catagg.financial.programme.Programme.apply" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">apply</span><span class="p">(</span><span class="n">yelt</span><span class="p">)</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Apply the programme to every simulated occurrence.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>yelt</code>
+            </td>
+            <td>
+                  <code><span title="pandas.DataFrame">DataFrame</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Year event loss table, as returned by <code>catagg.simulate</code>. Rows are
+put in order of <code>(sim_year, occurrence_index)</code> before anything is
+ceded; the order they arrive in is not relied on.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><a class="autorefs autorefs-internal" title="ProgrammeResult
+
+
+  
+      dataclass
+   (catagg.financial.programme.ProgrammeResult)" href="#catagg.financial.programme.ProgrammeResult">ProgrammeResult</a></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Gross, ceded and net loss per occurrence, and each structure's
+cession.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+<p><span class="doc-section-title">Raises:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><a class="autorefs autorefs-internal" title="CataggError (catagg.exceptions.CataggError)" href="../api/#catagg.CataggError">CataggError</a></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>If a required column is missing, two rows share a <code>sim_year</code> and
+<code>occurrence_index</code>, the year count is unknown, or a structure
+cedes a negative amount or more than it was offered.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+            <details class="mkdocstrings-source">
+              <summary>Source code in <code>src/catagg/financial/programme.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 98</span>
+<span class="normal"> 99</span>
+<span class="normal">100</span>
+<span class="normal">101</span>
+<span class="normal">102</span>
+<span class="normal">103</span>
+<span class="normal">104</span>
+<span class="normal">105</span>
+<span class="normal">106</span>
+<span class="normal">107</span>
+<span class="normal">108</span>
+<span class="normal">109</span>
+<span class="normal">110</span>
+<span class="normal">111</span>
+<span class="normal">112</span>
+<span class="normal">113</span>
+<span class="normal">114</span>
+<span class="normal">115</span>
+<span class="normal">116</span>
+<span class="normal">117</span>
+<span class="normal">118</span>
+<span class="normal">119</span>
+<span class="normal">120</span>
+<span class="normal">121</span>
+<span class="normal">122</span>
+<span class="normal">123</span>
+<span class="normal">124</span>
+<span class="normal">125</span>
+<span class="normal">126</span>
+<span class="normal">127</span>
+<span class="normal">128</span>
+<span class="normal">129</span>
+<span class="normal">130</span>
+<span class="normal">131</span>
+<span class="normal">132</span>
+<span class="normal">133</span>
+<span class="normal">134</span>
+<span class="normal">135</span>
+<span class="normal">136</span>
+<span class="normal">137</span>
+<span class="normal">138</span>
+<span class="normal">139</span>
+<span class="normal">140</span>
+<span class="normal">141</span>
+<span class="normal">142</span>
+<span class="normal">143</span>
+<span class="normal">144</span>
+<span class="normal">145</span>
+<span class="normal">146</span>
+<span class="normal">147</span>
+<span class="normal">148</span>
+<span class="normal">149</span>
+<span class="normal">150</span>
+<span class="normal">151</span>
+<span class="normal">152</span>
+<span class="normal">153</span>
+<span class="normal">154</span>
+<span class="normal">155</span>
+<span class="normal">156</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">apply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">yelt</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ProgrammeResult</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Apply the programme to every simulated occurrence.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    yelt</span>
+<span class="sd">        Year event loss table, as returned by `catagg.simulate`. Rows are</span>
+<span class="sd">        put in order of ``(sim_year, occurrence_index)`` before anything is</span>
+<span class="sd">        ceded; the order they arrive in is not relied on.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ProgrammeResult</span>
+<span class="sd">        Gross, ceded and net loss per occurrence, and each structure's</span>
+<span class="sd">        cession.</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    CataggError</span>
+<span class="sd">        If a required column is missing, two rows share a ``sim_year`` and</span>
+<span class="sd">        ``occurrence_index``, the year count is unknown, or a structure</span>
+<span class="sd">        cedes a negative amount or more than it was offered.</span>
+<span class="sd">    """</span>
+    <span class="n">missing</span> <span class="o">=</span> <span class="p">[</span><span class="n">column</span> <span class="k">for</span> <span class="n">column</span> <span class="ow">in</span> <span class="n">_REQUIRED_COLUMNS</span> <span class="k">if</span> <span class="n">column</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">yelt</span><span class="o">.</span><span class="n">columns</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">missing</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">CataggError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"the YELT is missing required columns: </span><span class="si">{</span><span class="n">missing</span><span class="si">}</span><span class="s2">."</span><span class="p">)</span>
+    <span class="n">n_years</span> <span class="o">=</span> <span class="n">n_years_of</span><span class="p">(</span><span class="n">yelt</span><span class="p">)</span>
+
+    <span class="n">ordered</span> <span class="o">=</span> <span class="n">yelt</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="nb">list</span><span class="p">(</span><span class="n">_REQUIRED_COLUMNS</span><span class="p">)]</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span>
+        <span class="p">[</span><span class="s2">"sim_year"</span><span class="p">,</span> <span class="s2">"occurrence_index"</span><span class="p">],</span> <span class="n">kind</span><span class="o">=</span><span class="s2">"stable"</span><span class="p">,</span> <span class="n">ignore_index</span><span class="o">=</span><span class="kc">True</span>
+    <span class="p">)</span>
+    <span class="n">years</span> <span class="o">=</span> <span class="n">ordered</span><span class="p">[</span><span class="s2">"sim_year"</span><span class="p">]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">(</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span>
+    <span class="n">index</span> <span class="o">=</span> <span class="n">ordered</span><span class="p">[</span><span class="s2">"occurrence_index"</span><span class="p">]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">(</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">years</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">((</span><span class="n">years</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">==</span> <span class="n">years</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">index</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">==</span> <span class="n">index</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])):</span>
+        <span class="k">raise</span> <span class="n">CataggError</span><span class="p">(</span>
+            <span class="s2">"two occurrences share a sim_year and occurrence_index, so their "</span>
+            <span class="s2">"order within the year is undefined."</span>
+        <span class="p">)</span>
+
+    <span class="n">gross</span> <span class="o">=</span> <span class="n">ordered</span><span class="p">[</span><span class="s2">"gross_loss"</span><span class="p">]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">(</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+    <span class="n">retained</span> <span class="o">=</span> <span class="n">gross</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+    <span class="n">ceded_columns</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">position</span><span class="p">,</span> <span class="n">structure</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_structures</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+        <span class="n">ceded</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">structure</span><span class="o">.</span><span class="n">cede</span><span class="p">(</span><span class="n">retained</span><span class="p">,</span> <span class="n">years</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">ceded</span><span class="o">.</span><span class="n">shape</span> <span class="o">!=</span> <span class="n">retained</span><span class="o">.</span><span class="n">shape</span> <span class="ow">or</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">ceded</span> <span class="o">&lt;</span> <span class="mf">0.0</span><span class="p">)</span> <span class="ow">or</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">ceded</span> <span class="o">&gt;</span> <span class="n">retained</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="n">CataggError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">"structure </span><span class="si">{</span><span class="n">position</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="n">structure</span><span class="o">.</span><span class="n">label</span><span class="si">}</span><span class="s2">) ceded a negative "</span>
+                <span class="s2">"amount, or more than the loss it was offered."</span>
+            <span class="p">)</span>
+        <span class="n">ceded_columns</span><span class="p">[</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">position</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">structure</span><span class="o">.</span><span class="n">label</span><span class="si">}</span><span class="s2">"</span><span class="p">]</span> <span class="o">=</span> <span class="n">ceded</span>
+        <span class="n">retained</span> <span class="o">=</span> <span class="n">retained</span> <span class="o">-</span> <span class="n">ceded</span>
+
+    <span class="c1"># One subtraction, so net + ceded recovers gross to within one unit in</span>
+    <span class="c1"># the last place on every occurrence - the float form of an identity.</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">ordered</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">ceded_loss</span><span class="o">=</span><span class="n">gross</span> <span class="o">-</span> <span class="n">retained</span><span class="p">,</span> <span class="n">net_loss</span><span class="o">=</span><span class="n">retained</span><span class="p">)</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="nb">list</span><span class="p">(</span><span class="n">_RESULT_COLUMNS</span><span class="p">)]</span>
+    <span class="n">result</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">"n_years"</span><span class="p">]</span> <span class="o">=</span> <span class="n">n_years</span>
+    <span class="n">by_structure</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">ceded_columns</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">result</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">ProgrammeResult</span><span class="p">(</span><span class="n">yelt</span><span class="o">=</span><span class="n">result</span><span class="p">,</span> <span class="n">ceded_by_structure</span><span class="o">=</span><span class="n">by_structure</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      &copy; 2026 Amal John &middot; MIT licence
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["content.code.copy", "navigation.sections", "navigation.top", "search.suggest", "toc.follow"], "search": "../assets/javascripts/workers/search.a7633da7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.a5f9d56c.min.js"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  </body>
+</html>

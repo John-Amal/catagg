@@ -2,30 +2,34 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
          <loc>https://john-amal.github.io/catagg/</loc>
-         <lastmod>2026-09-18</lastmod>
+         <lastmod>2026-11-14</lastmod>
     </url>
     <url>
          <loc>https://john-amal.github.io/catagg/api/</loc>
-         <lastmod>2026-09-18</lastmod>
+         <lastmod>2026-11-14</lastmod>
     </url>
     <url>
          <loc>https://john-amal.github.io/catagg/changelog/</loc>
-         <lastmod>2026-09-18</lastmod>
+         <lastmod>2026-11-14</lastmod>
+    </url>
+    <url>
+         <loc>https://john-amal.github.io/catagg/financial/</loc>
+         <lastmod>2026-11-14</lastmod>
     </url>
     <url>
          <loc>https://john-amal.github.io/catagg/metrics/</loc>
-         <lastmod>2026-09-18</lastmod>
+         <lastmod>2026-11-14</lastmod>
     </url>
     <url>
          <loc>https://john-amal.github.io/catagg/releasing/</loc>
-         <lastmod>2026-09-18</lastmod>
+         <lastmod>2026-11-14</lastmod>
     </url>
     <url>
          <loc>https://john-amal.github.io/catagg/simulation/</loc>
-         <lastmod>2026-09-18</lastmod>
+         <lastmod>2026-11-14</lastmod>
     </url>
     <url>
          <loc>https://john-amal.github.io/catagg/validation/</loc>
-         <lastmod>2026-09-18</lastmod>
+         <lastmod>2026-11-14</lastmod>
     </url>
 </urlset>

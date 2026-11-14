@@ -13,7 +13,7 @@
         <link rel="canonical" href="https://john-amal.github.io/catagg/validation/">
       
       
-        <link rel="prev" href="../metrics/">
+        <link rel="prev" href="../financial/">
       
       
         <link rel="next" href="../api/">
@@ -23,7 +23,7 @@
       
       
       <link rel="icon" href="../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.8.1">
     
     
       
@@ -31,10 +31,10 @@
       
     
     
-      <link rel="stylesheet" href="../assets/stylesheets/main.ec1eaa64.min.css">
+      <link rel="stylesheet" href="../assets/stylesheets/main.57a0d79d.min.css">
       
         
-        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
+        <link rel="stylesheet" href="../assets/stylesheets/palette.fb2fffe2.min.css">
       
       
 
@@ -342,6 +342,33 @@
       
   
   
+  
+  
+    <li class="md-nav__item">
+      <a href="../financial/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Financial structures
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
     
   
   
@@ -532,13 +559,23 @@ end of the v0.1.0 milestone; no results are published here yet.</p>
 </tr>
 <tr>
 <td>Ceded loss against the aggregate reinstatement cap</td>
-<td>Reinstatement accounting never over-recovers</td>
-<td>Not built</td>
+<td>Reinstatement accounting never over-recovers, on a portfolio where the cap demonstrably binds</td>
+<td>In CI</td>
 </tr>
 <tr>
-<td>Net + ceded = gross, every simulated year</td>
-<td>The financial module conserves loss exactly</td>
-<td>Not built</td>
+<td>Net + ceded = gross, every occurrence and every year</td>
+<td>The financial module conserves loss, to within one unit in the last place per occurrence</td>
+<td>In CI</td>
+</tr>
+<tr>
+<td>Simulated layer AAL against analytic <code>Σ λᵢ · clip(yᵢ − A, 0, L)</code></td>
+<td>The layer responds to the right retained loss, behind a quota share</td>
+<td>In CI</td>
+</tr>
+<tr>
+<td>Annual ceded and net totals under reordered occurrences</td>
+<td>Occurrence order moves cover between events, never in total</td>
+<td>In CI</td>
 </tr>
 <tr>
 <td>Tail-metric standard error against simulation count</td>
@@ -621,10 +658,10 @@ to prove anything fails rather than passing quietly.</p>
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["content.code.copy", "navigation.sections", "navigation.top", "search.suggest", "toc.follow"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["content.code.copy", "navigation.sections", "navigation.top", "search.suggest", "toc.follow"], "search": "../assets/javascripts/workers/search.a7633da7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../assets/javascripts/bundle.d7400e89.min.js"></script>
+      <script src="../assets/javascripts/bundle.a5f9d56c.min.js"></script>
       
         <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
       
