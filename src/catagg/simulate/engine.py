@@ -20,6 +20,15 @@ leaves the AAL exact and understates every other moment. With ``True`` it is a
 draw from `catagg.severity.BetaSeverity`, which leaves the AAL exact as well —
 the severity mean is unchanged — and adds ``sum(rate * std_loss ** 2)`` to the
 variance of the annual aggregate loss.
+
+A fourth stage puts each year's occurrences in chronological order, which is
+what ``occurrence_index`` records. Neither frequency model is seasonal, so given
+``N`` occurrences in a year their arrival times are independent and uniform over
+the year, and their order is a uniform random permutation. The engine draws that
+permutation directly, from its own reserved seed, without generating times it
+would then discard. Order changes no annual total. What it does change is which
+occurrence exhausts a limited per-occurrence cover, and so the net occurrence
+exceedance curve.
 """
 
 from __future__ import annotations
@@ -133,6 +142,27 @@ def _allocate_occurrences(
     return allocated
 
 
+def _within_year_order(years: NDArray[np.int32], rng: np.random.Generator) -> NDArray[np.int64]:
+    """Draw a uniformly random order for the occurrences within each year.
+
+    Parameters
+    ----------
+    years
+        Simulated year of each occurrence, sorted ascending.
+    rng
+        Source of randomness.
+
+    Returns
+    -------
+    numpy.ndarray
+        A permutation that keeps ``years`` sorted and orders each year's
+        occurrences uniformly at random.
+    """
+    keys: NDArray[np.float64] = rng.random(int(years.shape[0]))
+    order: NDArray[np.int64] = np.lexsort((keys, years)).astype(np.int64, copy=False)
+    return order
+
+
 def simulate(
     elt: pd.DataFrame,
     n_years: int,
@@ -178,7 +208,9 @@ def simulate(
     pandas.DataFrame
         A YELT with columns ``sim_year``, ``event_id``, ``occurrence_index`` and
         ``gross_loss``, sorted by ``sim_year`` then ``occurrence_index``, with
-        ``attrs["n_years"]`` set. Years with no occurrences contribute no rows.
+        ``attrs["n_years"]`` set. ``occurrence_index`` is the chronological
+        position of the occurrence within its year, counting from zero. Years
+        with no occurrences contribute no rows.
 
     Raises
     ------
@@ -209,15 +241,20 @@ def simulate(
     event_id = elt["event_id"].to_numpy(dtype=np.int64)
     mean_loss = elt["mean_loss"].to_numpy(dtype=np.float64)
 
-    # One child per group, plus one reserved for severity. Spawning is ordered,
-    # so the group streams are the ones they would have been without the extra
-    # child: adding severity does not move a run with it switched off.
-    seeds = np.random.SeedSequence(seed).spawn(len(groups) + 1)
+    # One child per group, then one reserved for severity and one for the order
+    # within each year. Spawning is ordered, so each stream is what it would
+    # have been without the children after it: toggling severity, or adding the
+    # ordering stage, moves no other draw. Index the reserved children
+    # explicitly - seeds[-1] would silently change meaning as children are added.
+    seeds = np.random.SeedSequence(seed).spawn(len(groups) + 2)
+    group_seeds = seeds[: len(groups)]
+    severity_seed = seeds[len(groups)]
+    order_seed = seeds[len(groups) + 1]
     total_counts = np.zeros(n_years, dtype=np.int64)
     year_pieces: list[NDArray[np.int32]] = []
     position_pieces: list[NDArray[np.int64]] = []
 
-    for (_, positions), child in zip(groups, seeds[:-1], strict=True):
+    for (_, positions), child in zip(groups, group_seeds, strict=True):
         rng = np.random.default_rng(child)
         group_rates = rate[positions]
         counts = model.sample_annual_counts(float(group_rates.sum()), n_years, rng)
@@ -232,21 +269,28 @@ def simulate(
         np.concatenate(position_pieces) if position_pieces else np.empty(0, dtype=np.int64)
     )
 
-    order = np.argsort(occurrence_years, kind="stable")
-    occurrence_positions = occurrence_positions[order]
+    by_year = np.argsort(occurrence_years, kind="stable")
+    occurrence_years = occurrence_years[by_year]
+    occurrence_positions = occurrence_positions[by_year]
+
+    # Severity is drawn before the occurrences are reordered, so a draw stays
+    # attached to its occurrence and the ordering stage cannot alter any loss.
+    if secondary_uncertainty:
+        gross_loss = BetaSeverity.from_elt(elt).sample(
+            occurrence_positions, np.random.default_rng(severity_seed)
+        )
+    else:
+        gross_loss = mean_loss[occurrence_positions]
+
+    chronological = _within_year_order(occurrence_years, np.random.default_rng(order_seed))
+    occurrence_positions = occurrence_positions[chronological]
+    gross_loss = gross_loss[chronological]
 
     n_occurrences = occurrence_positions.shape[0]
     starts = np.cumsum(total_counts) - total_counts
     occurrence_index = (
         np.arange(n_occurrences, dtype=np.int64) - np.repeat(starts, total_counts)
     ).astype(np.int32, copy=False)
-
-    if secondary_uncertainty:
-        gross_loss = BetaSeverity.from_elt(elt).sample(
-            occurrence_positions, np.random.default_rng(seeds[-1])
-        )
-    else:
-        gross_loss = mean_loss[occurrence_positions]
 
     yelt = pd.DataFrame(
         {
@@ -260,7 +304,9 @@ def simulate(
     return yelt
 
 
-def to_ylt(yelt: pd.DataFrame, n_years: int | None = None) -> pd.DataFrame:
+def to_ylt(
+    yelt: pd.DataFrame, n_years: int | None = None, *, column: str = "gross_loss"
+) -> pd.DataFrame:
     """Collapse a YELT to one row per simulated year.
 
     Every year in ``range(n_years)`` appears, including the ones in which nothing
@@ -275,21 +321,34 @@ def to_ylt(yelt: pd.DataFrame, n_years: int | None = None) -> pd.DataFrame:
         Year event loss table.
     n_years
         Explicit year count if ``yelt.attrs`` no longer carries it.
+    column
+        The per-occurrence loss column to collapse. ``"gross_loss"`` for a YELT
+        from `simulate`; ``"ceded_loss"`` or ``"net_loss"`` for the table a
+        reinsurance programme returns.
 
     Returns
     -------
     pandas.DataFrame
         A YLT with columns ``sim_year``, ``aggregate_loss`` and
         ``max_occurrence_loss``.
+
+    Raises
+    ------
+    CataggError
+        If ``column`` is not in the table.
     """
+    if column not in yelt.columns:
+        raise CataggError(
+            f"column {column!r} is not in the table; got columns {list(yelt.columns)}."
+        )
     resolved = n_years_of(yelt, n_years)
     years = np.arange(resolved, dtype=np.int32)
     sim_year = yelt["sim_year"].to_numpy(dtype=np.int64)
-    gross_loss = yelt["gross_loss"].to_numpy(dtype=np.float64)
+    loss = yelt[column].to_numpy(dtype=np.float64)
 
-    aggregate = np.bincount(sim_year, weights=gross_loss, minlength=resolved)
+    aggregate = np.bincount(sim_year, weights=loss, minlength=resolved)
     maximum = np.zeros(resolved, dtype=np.float64)
-    np.maximum.at(maximum, sim_year, gross_loss)
+    np.maximum.at(maximum, sim_year, loss)
 
     ylt = pd.DataFrame(
         {"sim_year": years, "aggregate_loss": aggregate, "max_occurrence_loss": maximum}

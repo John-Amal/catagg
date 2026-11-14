@@ -7,7 +7,30 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- `simulate` now puts each year's occurrences in chronological order, drawn as
+  a uniform random permutation from a reserved child seed, and
+  `occurrence_index` is documented as that order. Previously occurrences were
+  grouped by peril in alphabetical order within each year, which would have
+  biased any cover consumed event by event towards the first peril. For a
+  fixed seed the YELT contains the same rows as before; only their order within
+  each year differs, so every order-free metric is unchanged.
+
 ### Added
+
+- Financial module: `QuotaShare`, `ExcessOfLoss` (per occurrence, with a
+  required number of reinstatements and the annual cap
+  `limit * (1 + reinstatements)`), and `AggregateStopLoss`, chained by
+  `Programme` in inuring order. `Programme.apply` returns a `ProgrammeResult`
+  with gross, ceded and net loss per occurrence and each structure's cession.
+  Limited covers are consumed in chronological order within each year.
+  `net_loss + ceded_loss` equals `gross_loss` to within one unit in the last
+  place on every occurrence, and every structure's cession is checked to lie
+  between zero and the loss it was offered.
+- A `Structure` protocol, so custom structures can join a programme.
+- `column=` on `to_ylt` and `ep_curve`, to build curves from `ceded_loss` or
+  `net_loss`.
 
 - Repository scaffolding generated from the shared template: hatchling build
   with src layout, ruff and mypy configuration, pytest setup, GitHub Actions

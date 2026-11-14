@@ -304,7 +304,7 @@ class EPCurve:
         )
 
 
-def ep_curve(losses: pd.DataFrame, kind: EPKind = "OEP") -> EPCurve:
+def ep_curve(losses: pd.DataFrame, kind: EPKind = "OEP", *, column: str | None = None) -> EPCurve:
     """Build an exceedance probability curve from a YELT or a YLT.
 
     Parameters
@@ -315,6 +315,11 @@ def ep_curve(losses: pd.DataFrame, kind: EPKind = "OEP") -> EPCurve:
     kind
         ``"OEP"`` for the annual maximum occurrence, ``"AEP"`` for the annual
         aggregate.
+    column
+        For a YELT, the per-occurrence loss column to use: ``"gross_loss"``
+        (the default), or ``"ceded_loss"`` or ``"net_loss"`` from a reinsurance
+        programme's result. Not accepted with a YLT, which has already
+        collapsed its occurrences.
 
     Returns
     -------
@@ -324,8 +329,9 @@ def ep_curve(losses: pd.DataFrame, kind: EPKind = "OEP") -> EPCurve:
     Raises
     ------
     CataggError
-        If ``kind`` is not ``"OEP"`` or ``"AEP"``, or the frame is neither a
-        YELT nor a YLT.
+        If ``kind`` is not ``"OEP"`` or ``"AEP"``, the frame is neither a YELT
+        nor a YLT, ``column`` is missing from it, or ``column`` is given with a
+        YLT.
 
     Examples
     --------
@@ -340,15 +346,22 @@ def ep_curve(losses: pd.DataFrame, kind: EPKind = "OEP") -> EPCurve:
     if kind not in _SOURCE_COLUMN:
         raise CataggError(f"kind must be 'OEP' or 'AEP', got {kind!r}.")
 
-    column = _SOURCE_COLUMN[kind]
-    if column in losses.columns:
+    source = _SOURCE_COLUMN[kind]
+    if source in losses.columns:
+        if column is not None:
+            raise CataggError(
+                f"column={column!r} applies to a YELT, but this is a YLT: its "
+                "occurrences are already collapsed."
+            )
         ylt = losses
+    elif column is not None:
+        ylt = to_ylt(losses, column=column)
     elif "gross_loss" in losses.columns:
         ylt = to_ylt(losses)
     else:
         raise CataggError(
             "losses must be a YELT (with a gross_loss column) or a YLT (with "
-            f"a {column} column); got columns {list(losses.columns)}."
+            f"a {source} column); got columns {list(losses.columns)}."
         )
 
-    return EPCurve(losses=np.sort(ylt[column].to_numpy(dtype=np.float64)), kind=kind)
+    return EPCurve(losses=np.sort(ylt[source].to_numpy(dtype=np.float64)), kind=kind)

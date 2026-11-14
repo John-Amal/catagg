@@ -4,6 +4,14 @@ from __future__ import annotations
 
 from catagg.examples import swiss_multiperil_elt
 from catagg.exceptions import CataggError, ELTValidationError
+from catagg.financial import (
+    AggregateStopLoss,
+    ExcessOfLoss,
+    Programme,
+    ProgrammeResult,
+    QuotaShare,
+    Structure,
+)
 from catagg.frequency import FrequencyModel, NegativeBinomial, Poisson
 from catagg.io import (
     ELT_COLUMNS,
@@ -34,14 +42,20 @@ __all__ = [
     "STANDARD_RETURN_PERIODS",
     "YELT_COLUMNS",
     "YELT_DTYPES",
+    "AggregateStopLoss",
     "BetaSeverity",
     "CataggError",
     "ELTValidationError",
     "EPCurve",
+    "ExcessOfLoss",
     "FrequencyModel",
     "NegativeBinomial",
     "Poisson",
+    "Programme",
+    "ProgrammeResult",
+    "QuotaShare",
     "SeverityRegime",
+    "Structure",
     "__version__",
     "aal_standard_error",
     "analytic_aal",

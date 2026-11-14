@@ -235,3 +235,61 @@ def test_poisson_thinning_is_exact_and_clustering_correlates_events(
         variances = [rate + coefficient * rate**2 for rate in (first, second)]
         standard_error = np.sqrt((variances[0] * variances[1] + expected**2) / n_years)
         assert abs(covariance - expected) < 4.0 * standard_error
+
+
+# ---------------------------------------------------------------------------
+# Chronological order within the year
+# ---------------------------------------------------------------------------
+
+
+def _with_peril(yelt: pd.DataFrame, elt: pd.DataFrame) -> pd.DataFrame:
+    """Attach each occurrence's peril, keeping chronological order within each year."""
+    peril = elt.set_index("event_id")["peril"]
+    ordered = yelt.sort_values(["sim_year", "occurrence_index"], kind="stable")
+    return ordered.assign(peril=peril.loc[ordered["event_id"]].to_numpy())
+
+
+def test_occurrence_order_does_not_depend_on_peril_labels(tiny_elt: pd.DataFrame) -> None:
+    """Which of two perils strikes first must be a coin flip, not an alphabetical fact.
+
+    Reinstatements consume cover in ``occurrence_index`` order, so any systematic
+    ordering by peril would hand the cover to whichever peril sorts first. Given
+    two occurrences in a year, the arrival times are exchangeable and the later
+    label must lead half the time, whatever the two rates are.
+    """
+    n_years = 200_000
+    labelled = _with_peril(simulate(tiny_elt, n_years=n_years, seed=81), tiny_elt)
+    counts = labelled.groupby("sim_year")["peril"].transform("size")
+    pairs = labelled[counts == 2]
+    first = pairs.groupby("sim_year")["peril"].first()
+    last = pairs.groupby("sim_year")["peril"].last()
+    mixed = first != last
+
+    for earlier, later in [("flood", "hail"), ("flood", "windstorm"), ("hail", "windstorm")]:
+        in_pair = mixed & first.isin([earlier, later]) & last.isin([earlier, later])
+        n_pairs = int(in_pair.sum())
+        assert n_pairs > 500, "too few mixed years for the test to have power"
+        later_first = float((first[in_pair] == later).mean())
+        assert abs(later_first - 0.5) < 4.0 * np.sqrt(0.25 / n_pairs), (earlier, later)
+
+
+def test_rank_within_year_is_uniform(tiny_elt: pd.DataFrame) -> None:
+    """Given ``N`` occurrences, each is equally likely to hold any position.
+
+    Among years with three occurrences of which exactly one is a flood, the
+    flood's ``occurrence_index`` must be uniform on {0, 1, 2}. The chi-square
+    statistic has two degrees of freedom, whose survival function is exactly
+    ``exp(-x / 2)``, so the threshold is an exact p-value of 1e-4.
+    """
+    n_years = 200_000
+    labelled = _with_peril(simulate(tiny_elt, n_years=n_years, seed=82), tiny_elt)
+    is_flood = labelled["peril"] == "flood"
+    grouped = is_flood.groupby(labelled["sim_year"])
+    selected = (grouped.transform("size") == 3) & (grouped.transform("sum") == 1)
+
+    positions = labelled.loc[selected & is_flood, "occurrence_index"].to_numpy()
+    observed = np.bincount(positions, minlength=3)
+    expected = positions.shape[0] / 3.0
+    assert expected > 1_000, "too few qualifying years for the test to have power"
+    statistic = float(((observed - expected) ** 2 / expected).sum())
+    assert statistic < -2.0 * np.log(1e-4), observed.tolist()

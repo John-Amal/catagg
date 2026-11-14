@@ -297,3 +297,45 @@ def test_a_ylt_and_its_yelt_give_the_same_curve(example_elt: pd.DataFrame) -> No
     from_yelt = ep_curve(yelt, kind="AEP")
     from_ylt = ep_curve(to_ylt(yelt), kind="AEP")
     np.testing.assert_array_equal(from_yelt.losses, from_ylt.losses)
+
+
+# ---------------------------------------------------------------------------
+# Reading a loss column other than gross_loss
+# ---------------------------------------------------------------------------
+
+
+def _with_net_column(yelt: pd.DataFrame, fraction: float) -> pd.DataFrame:
+    frame = yelt.assign(net_loss=fraction * yelt["gross_loss"])
+    frame.attrs["n_years"] = yelt.attrs["n_years"]
+    return frame
+
+
+def test_to_ylt_collapses_the_requested_column(tiny_elt: pd.DataFrame) -> None:
+    yelt = _with_net_column(simulate(tiny_elt, n_years=5_000, seed=61), 0.25)
+    gross = to_ylt(yelt)
+    net = to_ylt(yelt, column="net_loss")
+    np.testing.assert_allclose(net["aggregate_loss"], 0.25 * gross["aggregate_loss"])
+    np.testing.assert_allclose(net["max_occurrence_loss"], 0.25 * gross["max_occurrence_loss"])
+
+
+def test_ep_curve_reads_the_requested_column(tiny_elt: pd.DataFrame) -> None:
+    yelt = _with_net_column(simulate(tiny_elt, n_years=5_000, seed=62), 0.5)
+    for kind in ("OEP", "AEP"):
+        gross = ep_curve(yelt, kind=kind)
+        net = ep_curve(yelt, kind=kind, column="net_loss")
+        np.testing.assert_allclose(net.losses, 0.5 * gross.losses)
+
+
+def test_an_unknown_column_is_named_in_the_error(tiny_elt: pd.DataFrame) -> None:
+    yelt = simulate(tiny_elt, n_years=100, seed=63)
+    with pytest.raises(CataggError, match="net_loss"):
+        ep_curve(yelt, column="net_loss")
+    with pytest.raises(CataggError, match="net_loss"):
+        to_ylt(yelt, column="net_loss")
+
+
+def test_a_column_cannot_be_chosen_on_a_ylt(tiny_elt: pd.DataFrame) -> None:
+    """A YLT has already collapsed its occurrences, so there is nothing to choose."""
+    ylt = to_ylt(simulate(tiny_elt, n_years=100, seed=64))
+    with pytest.raises(CataggError, match="YLT"):
+        ep_curve(ylt, column="net_loss")

@@ -3,8 +3,9 @@
 !!! note "v0.1.0 is in development"
 
     This page documents the gross view: EP curves, tail metrics and their Monte
-    Carlo error. The financial module that produces ceded and net curves is not
-    yet built.
+    Carlo error. For ceded and net curves, pass the result of a reinsurance
+    programme with `column="ceded_loss"` or `column="net_loss"`; see
+    [Financial structures](financial.md).
 
 An exceedance probability curve is the empirical distribution of a per-year
 loss, read from the tail. Two of them matter, and they answer different

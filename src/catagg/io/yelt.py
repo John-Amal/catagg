@@ -4,6 +4,12 @@ A YELT has one row per event *occurrence* per simulated year. Years in which
 nothing happened have no rows, so the number of simulated years cannot be
 recovered from the table itself and is carried alongside it in
 ``yelt.attrs["n_years"]``.
+
+``occurrence_index`` is the chronological position of an occurrence within its
+year, counting from zero. Anything that consumes cover event by event - a
+per-occurrence layer with limited reinstatements, an aggregate cover allocated
+back to occurrences - does so in this order, so code reading a YELT should sort
+on ``(sim_year, occurrence_index)`` explicitly rather than rely on row order.
 """
 
 from __future__ import annotations

@@ -4,7 +4,8 @@
 
     This page documents what is implemented today: ELT ingest and validation,
     frequency sampling, secondary uncertainty, and year event loss table
-    generation. Dependence and the financial module are not yet built.
+    generation. Dependence is not yet built; see
+    [Financial structures](financial.md) for the reinsurance layer.
 
 ## The objects
 
@@ -119,6 +120,30 @@ What changes is everything above the first moment: the variance of the annual
 aggregate loss gains $\sum_i \lambda_i \sigma_i^2$, and
 `analytic_annual_loss_variance(..., secondary_uncertainty=True)` is the closed
 form the simulation is checked against.
+
+## Occurrence order is chronological
+
+`occurrence_index` numbers each year's occurrences in order of arrival. Nothing
+upstream of the financial module depends on it: AAL, AEP and OEP are all
+functions of the unordered set of losses in a year. But a per-occurrence layer
+with $n$ reinstatements pays out at most $L\,(1+n)$ in a year, and when that cap
+binds, *which* occurrence it cuts off depends on the order. That choice decides
+the net loss on each occurrence, hence the net OEP, and hence how ceded loss is
+attributed across perils.
+
+Neither frequency model is seasonal. Given $N$ occurrences in a year, their
+arrival times are independent and uniform over the year, so their order is a
+uniform random permutation, and that permutation is drawn directly, from a
+reserved seed. This is exact for the models implemented, not an approximation
+to a timestamp; seasonality, which would make it one, is on the roadmap.
+
+The order is drawn *after* severity, so it reorders occurrences without
+touching any of them. For a fixed seed the YELT holds the same rows whether or
+not the order is shuffled, and every order-free metric is unchanged.
+
+Two tests pin the property: in years with one occurrence from each of two
+perils, each leads half the time regardless of the perils' rates or names; and
+among three occurrences, a given one is equally likely to hold any position.
 
 ## Empty years are not optional
 

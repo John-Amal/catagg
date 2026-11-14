@@ -26,10 +26,12 @@ A reinsurer holds a portfolio exposed to several perils. The catastrophe models 
 ## Install
 
 ```bash
-pip install catagg
+pip install --pre catagg          # early pre-release on PyPI
+# or the latest development version
+pip install git+https://github.com/John-Amal/catagg
 ```
 
-Python 3.11+. Runtime dependencies are numpy, pandas, pyarrow and scipy — nothing else.
+Python 3.11+. Runtime dependencies are numpy, pandas, pyarrow and scipy — nothing else. `catagg` is in active development towards v0.1.0; the API below may still change.
 
 ---
 
@@ -38,34 +40,28 @@ Python 3.11+. Runtime dependencies are numpy, pandas, pyarrow and scipy — noth
 ```python
 import catagg as ca
 
-# 1. Load an event loss table
-elt = ca.read_elt("portfolio.parquet")
+# 1. An event loss table (synthetic example portfolio; use ca.read_elt("portfolio.parquet") for your own)
+elt = ca.swiss_multiperil_elt(n_events=1_000, seed=0)
 
 # 2. Simulate 100,000 years
-yelt = ca.simulate(
-    elt,
-    n_years=100_000,
-    frequency="negative_binomial",   # or "poisson"
-    secondary_uncertainty=True,
-    seed=42,
-)
+yelt = ca.simulate(elt, n_years=100_000, secondary_uncertainty=True, seed=42)
 
 # 3. Gross view
-gross = ca.ep_curve(yelt)
+gross = ca.ep_curve(yelt, kind="OEP")
 print(gross.at_return_period([10, 50, 100, 200, 250]))
 
 # 4. Apply a reinsurance programme
 programme = ca.Programme([
     ca.QuotaShare(cession=0.20),
-    ca.ExcessOfLoss(attachment=50e6, limit=50e6, reinstatements=2, basis="occurrence"),
+    ca.ExcessOfLoss(attachment=50e6, limit=50e6, reinstatements=2),
     ca.AggregateStopLoss(attachment=100e6, limit=100e6),
 ])
-
 result = programme.apply(yelt)
-net = ca.ep_curve(result.net)
+net = ca.ep_curve(result.yelt, kind="OEP", column="net_loss")
 
 # 5. Compare
-ca.plot.ep_comparison({"Gross": gross, "Net": net}, kind="OEP")
+from catagg.plot import ep_comparison  # pip install "catagg[plot]"
+ep_comparison({"Gross": gross, "Net": net})
 ```
 
 Everything runs from a clean clone — the example portfolio is generated synthetically by a documented generator, so there are no data dependencies and no licensing questions.
@@ -94,14 +90,13 @@ If you already work in cat modelling, skip this. If you're reading the code to l
 
 **Secondary uncertainty.** Loss given occurrence is sampled from a beta distribution on `[0, exposed_value]`, fitted by moments to the ELT's mean and standard deviation. At the largest variance the support allows, that fit becomes the two-point law carrying probability mass at zero and at full exposure — the boundary member of the same family, reached continuously, rather than a free parameter. Degenerate cases — zero variance, or a variance the beta support cannot accommodate — are handled explicitly rather than silently clipped.
 
-**Dependence.** Perils are correlated through a Gaussian or Student-t copula applied to annual losses. Independence is the default; the example shows what assuming it costs you in the tail.
+**Dependence.** Perils are currently simulated independently. Correlating them through a copula is on the roadmap.
 
 **Financial structures.** Applied in programme order:
 
-- Quota share, with optional ceding commission
+- Quota share
 - Per-occurrence excess of loss: attachment, limit, *n* reinstatements at stated percentages, pro-rata to amount, with the aggregate cap of `limit × (1 + n)` enforced
 - Aggregate excess of loss and stop-loss
-- Franchise deductible
 
 **Metrics.** OEP, AEP, AAL, TVaR at any return period, full return-period tables, and Monte Carlo standard errors on every tail statistic.
 
@@ -109,7 +104,7 @@ If you already work in cat modelling, skip this. If you're reading the code to l
 
 ## Validation
 
-Numerical libraries in this domain live or die on whether you can show they're right. `catagg` ships a validation suite that runs in CI and as a readable notebook:
+Numerical libraries in this domain live or die on whether you can show they're right. `catagg` ships a validation suite that runs in CI on every commit:
 
 - Simulated AAL converges to the analytic `Σ λᵢ · μᵢ`
 - Sampled frequency moments match the specified Poisson or negative binomial
@@ -120,7 +115,7 @@ Numerical libraries in this domain live or die on whether you can show they're r
 
 That last one matters more than it looks. A 200-year return period estimated from 10,000 simulation years carries a standard error large enough to change decisions, and most workflows never report it. `catagg` reports it by default.
 
-See [docs/validation](https://john-amal.github.io/catagg/validation/).
+See [docs/validation](https://john-amal.github.io/catagg/validation/); a readable validation notebook with published results is in progress.
 
 ---
 
@@ -136,6 +131,7 @@ See [docs/validation](https://john-amal.github.io/catagg/validation/).
 
 ## Roadmap
 
+- **v0.1** — Gaussian and Student-t copulas across perils, ceding commission, franchise deductible, validation notebook
 - **v0.2** — location and policy-level terms, surplus share, reinstatement premium calculation
 - **v0.3** — OED-compatible ELT ingest, `oasislmf` interoperability
 - **v0.4** — event-level correlation across sub-perils, seasonality in event timing

@@ -63,6 +63,7 @@ nav:
   - Home: index.md
   - Simulation: simulation.md
   - Metrics: metrics.md
+  - Financial structures: financial.md
   - Validation: validation.md
   - API reference: api.md
   - Releasing: releasing.md
